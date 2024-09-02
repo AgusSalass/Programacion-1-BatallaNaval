@@ -1,19 +1,17 @@
 import os
 
 def mostrar_equipo():
-    print("Este es nuestro equipo")
-    for i in Equipo:
-        print(i)
-
+    print("Este es nuestro equipo:")
+    for miembro in Equipo:
+        print(miembro)
 
 def mostrar_proyecto():
-    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval") #TODO revisar esta funcion
+    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval.")
 
 #menu
 def menu():
-
     repetir = True
-    while  repetir:
+    while repetir:
         os.system("cls")
         print ("1-Equipo")
         print ("2-Proyecto")
@@ -34,8 +32,6 @@ def menu():
             print("Error, debe usar un numero")
             input()
             
-Equipo = ["Diaz, German Ezequiel", "Nuñez, Francisco", "Ragagnin, Nicolas",
+Equipo = ["Diaz, German Ezequiel", "Nuñez, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella", "Trimarco, Tomas"]
-
-
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
