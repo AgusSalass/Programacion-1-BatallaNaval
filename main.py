@@ -1,7 +1,8 @@
 import Modulo_funciones.Core as f
 
 def main():
-    pass
+    f.menu()
+    return
 
 if __name__=="__main__":
     main()
