@@ -11,9 +11,8 @@ def mostrar_proyecto():
 
 #menu
 def menu():
-
     repetir = True
-    while  repetir:
+    while repetir:
         os.system("cls")
         print ("1-Equipo")
         print ("2-Proyecto")
