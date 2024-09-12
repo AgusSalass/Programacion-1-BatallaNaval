@@ -2,7 +2,7 @@ import os
 
 def mostrar_equipo():
     print("Este es nuestro equipo")
-    for miembro in Equipo:
+    for miembro in equipo:
         print(miembro)
 
 
@@ -33,7 +33,7 @@ def menu():
             print("Error, debe usar un numero")
             input()
             
-Equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
+equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella Florentina", "Trimarco, Tomas"]
 
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
