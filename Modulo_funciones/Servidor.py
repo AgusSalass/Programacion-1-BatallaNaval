@@ -4,7 +4,7 @@ import socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('10.100.51.252', 12345)
+server_address = ('192.168.191.5', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
@@ -20,10 +20,11 @@ while True:
     print(f"Connected by {address}")
 
     # Handle the connection (e.g., send/receive data)
-    while True:
+    conexion = True
+    while conexion:
         data = connection.recv(1024)
         if not data:
-            break
+            conexion = False
         print(f"Received: {data.decode()}")
         connection.sendall(data)
 
