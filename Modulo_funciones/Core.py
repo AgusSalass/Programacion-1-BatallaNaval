@@ -34,7 +34,7 @@ def menu():
         except:
             print("Error, debe usar un numero")
             input()
-def juego():
+def juego(): #TODO indicar arriba del tablero que tipo de caracter ascii representa cada cosa
     j1_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["║","~","¤","░","~","░","░","░","~","~","~","║"],
