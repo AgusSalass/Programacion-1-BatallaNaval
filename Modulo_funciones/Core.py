@@ -1,5 +1,6 @@
 import os
-
+import pygame
+import keyboard
 def mostrar_equipo():
     print("Este es nuestro equipo")
     for miembro in equipo:
@@ -34,7 +35,14 @@ def menu():
         except:
             print("Error, debe usar un numero")
             input()
+def dibujar(tablero):
+    for fila in tablero:
+        for columna in fila:
+            print(columna,end="")
+        print()
 def juego():
+    pygame.init()
+    clock = pygame.time.Clock()
     j1_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
                          ["║","░","░","░","░","░","░","░","░","░","░","║"],
                          ["║","░","░","░","░","░","░","░","░","░","░","║"],
@@ -83,16 +91,20 @@ def juego():
                           ["║","░","░","░","░","░","░","░","░","░","░","║"],
                           ["║","░","░","░","░","░","░","░","░","░","░","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
-    #como puedo crear un servidor, donde se puedan conectar 2 clientes de forma remota en la misma red?
-    for fila in j1_tablerodisparos:
-        for columna in fila:
-            print(columna,end="")
-        print()
-    for fila in j1_tablerobarcos:
-        for columna in fila:
-            print(columna,end="")
-        print()
+    game = True
+    while game ==  True:
+        if keyboard.is_pressed('w'):
+            print("w")
+        if keyboard.is_pressed('s'):
+            print("s")
+        if keyboard.is_pressed('d'):
+            print("d")
+        if keyboard.is_pressed('a'):
+            print("a")
+        # dibujar(j1_tablerobarcos)
+        # dibujar(j1_tablerodisparos)
+        clock.tick(30)
+        os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella", "Trimarco, Tomas"]
-
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
