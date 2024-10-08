@@ -1,4 +1,4 @@
-j1_barcos = [[(0,0),(0,1),(0,2)],[(1,0),(2,0),(3,0)]]
+j1_barcos = [[(0,0),(0,1),(0,2),"crucero"],[(1,0),(2,0),(3,0),"crucero"]]
 j1_barcos = [[(0,0),(0,1),(0,2)],[(1,0),(2,0),(3,0)]]
 hit = (0,0)
 i = 0
@@ -9,9 +9,11 @@ while i < len(j1_barcos) and encontrado == False:
         if hit == j1_barcos[i][j] and encontrado == False:
             del j1_barcos[i][j]
             encontrado = True
-            if j1_barcos[i] == []:
+            if j1_barcos[i] == ["crucero"]:
                 del j1_barcos[i]
+                crucero = 3
                 print("barco hundido")
+
         j += 1
     i += 1
 print(j1_barcos)
