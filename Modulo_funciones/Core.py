@@ -48,13 +48,22 @@ def generar_tablero():
     pass
 
 def movimiento_barco(direccion,barcos,barco,tablero):
+    aux = copy.deepcopy(barcos[barco])
+    posible = True
     for i in range(len(barcos[barco])):
-        old_x,old_y = barcos[barco][i]
-        tablero[old_x][old_y] = "~"
-        x,y = direccion
-        new_x = old_x + x
-        new_y = old_y + y
-        barcos[barco][i] = (new_x,new_y)
+        if posible:
+            old_x,old_y = barcos[barco][i]
+            tablero[old_x][old_y] = "~"
+            x,y = direccion
+            new_x = old_x + x
+            new_y = old_y + y
+            if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
+                posible = False
+                barcos[barco] = copy.deepcopy(aux)
+            else:
+                barcos[barco][i] = (new_x,new_y)
+        
+    
         
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
@@ -62,21 +71,34 @@ def visualizar_barco(barcos,tablero_barcos):
             tablero_barcos[coordenada[0]][coordenada[1]] = "≡"
             
 def rotacion_vertical(barcos,barco,tablero):
+    aux = copy.deepcopy(barcos[barco])
+    posible = True
     for coordenada in range(len(barcos[0])):
-        old_x,old_y = barcos[barco][coordenada]
-        tablero[old_x][old_y] = "~"
-        new_x = old_x + coordenada
-        new_y = old_y - coordenada
-        barcos[barco][coordenada]=(new_x,new_y)
-        print()
+        if posible:
+            old_x,old_y = barcos[barco][coordenada]
+            tablero[old_x][old_y] = "~"
+            new_x = old_x + coordenada
+            new_y = old_y - coordenada
+            if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
+                posible = False
+                barcos[barco] = copy.deepcopy(aux)
+            else:
+                barcos[barco][coordenada]=(new_x,new_y)
         
 def rotacion_horizontal(barcos,barco,tablero):
+    aux = copy.deepcopy(barcos[barco])
+    posible = True
     for coordenada in range(len(barcos[0])):
-        old_x,old_y = barcos[barco][coordenada]
-        tablero[old_x][old_y] = "~"
-        new_x = old_x - coordenada
-        new_y = old_y + coordenada
-        barcos[barco][coordenada]=(new_x,new_y)
+        if posible:
+            old_x,old_y = barcos[barco][coordenada]
+            tablero[old_x][old_y] = "~"
+            new_x = old_x - coordenada
+            new_y = old_y + coordenada
+            if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
+                posible = False
+                barcos[barco] = copy.deepcopy(aux)
+            else:
+                barcos[barco][coordenada]=(new_x,new_y)
         
 def juego():
     pygame.init()
@@ -130,8 +152,7 @@ def juego():
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
-    j2_tablerobarcos   = [#para la confeccion de monedas se emplea una aleación con 25% de niquel y el resto cobre, calcular la masa de cada uno
-    #de estos metales en una moneda de 5 gramos
+    j2_tablerobarcos   = [
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
@@ -144,7 +165,6 @@ def juego():
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     barcosj1 = [[(1,1),(1,2),(1,3)]]
-    barcoaux = copy.deepcopy(barcosj1)
     game = True
     while game ==  True:
         #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
