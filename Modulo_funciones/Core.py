@@ -1,6 +1,8 @@
 import os
 import pygame
 import keyboard
+import copy
+
 def mostrar_equipo():
     print("Este es nuestro equipo")
     for miembro in equipo:
@@ -35,13 +37,16 @@ def menu():
         except:
             print("Error, debe usar un numero")
             input()
+            
 def dibujar(tablero):
     for fila in tablero:
         for columna in fila:
             print(columna,end="")
         print()
+        
 def generar_tablero():
     pass
+
 def movimiento_barco(direccion,barcos,barco,tablero):
     for i in range(len(barcos[barco])):
         old_x,old_y = barcos[barco][i]
@@ -50,10 +55,29 @@ def movimiento_barco(direccion,barcos,barco,tablero):
         new_x = old_x + x
         new_y = old_y + y
         barcos[barco][i] = (new_x,new_y)
+        
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
         for coordenada in barco:
             tablero_barcos[coordenada[0]][coordenada[1]] = "≡"
+            
+def rotacion_vertical(barcos,barco,tablero):
+    for coordenada in range(len(barcos[0])):
+        old_x,old_y = barcos[barco][coordenada]
+        tablero[old_x][old_y] = "~"
+        new_x = old_x + coordenada
+        new_y = old_y - coordenada
+        barcos[barco][coordenada]=(new_x,new_y)
+        print()
+        
+def rotacion_horizontal(barcos,barco,tablero):
+    for coordenada in range(len(barcos[0])):
+        old_x,old_y = barcos[barco][coordenada]
+        tablero[old_x][old_y] = "~"
+        new_x = old_x - coordenada
+        new_y = old_y + coordenada
+        barcos[barco][coordenada]=(new_x,new_y)
+        
 def juego():
     pygame.init()
     clock = pygame.time.Clock()
@@ -107,6 +131,7 @@ def juego():
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     barcosj1 = [[(1,1),(1,2),(1,3)]]
+    barcoaux = copy.deepcopy(barcosj1)
     game = True
     while game ==  True:
         #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
@@ -131,6 +156,14 @@ def juego():
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((0,-1),barcosj1,0,j1_tablerobarcos)
+            presionado = True
+        elif keyboard.is_pressed('r'):
+            if presionado == False:
+                if estado == "posicionar barcos":
+                    if barcosj1[0][0][0]==barcosj1[0][1][0]:
+                        rotacion_vertical(barcosj1,0,j1_tablerobarcos)
+                    else:
+                        rotacion_horizontal(barcosj1,0,j1_tablerobarcos)
             presionado = True
         else:
             presionado = False
