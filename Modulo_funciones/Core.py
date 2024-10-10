@@ -23,11 +23,11 @@ def menu():
         try:
             op=int(input("Eliga una opcion: "))
             
-            if op==1:
+            if op == 1:
                 mostrar_equipo()
-            elif op==2:
+            elif op == 2:
                 mostrar_proyecto()
-            elif op==4:
+            elif op == 4:
                 repetir=False
             elif op == 5:
                 juego()
@@ -70,7 +70,7 @@ def visualizar_barco(barcos,tablero_barcos):
         for coordenada in barco:
             tablero_barcos[coordenada[0]][coordenada[1]] = "≡"
             
-def rotacion_vertical(barcos,barco,tablero):
+def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
     posible = True
     for coordenada in range(len(barcos[0])):
@@ -85,10 +85,10 @@ def rotacion_vertical(barcos,barco,tablero):
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
         
-def rotacion_horizontal(barcos,barco,tablero):
+def rotacion_a_horizontal(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
     posible = True
-    for coordenada in range(len(barcos[0])):
+    for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
             tablero[old_x][old_y] = "~"
@@ -99,11 +99,23 @@ def rotacion_horizontal(barcos,barco,tablero):
                 barcos[barco] = copy.deepcopy(aux)
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
+
+def confirmar_barco(barcos,barco):
+    posible = True
+    for coordenada in range(len(barcos[barco])):
+        if posible:
+            old_x,old_y = barcos[barco][coordenada]
+            if old_x == "≡" or  old_y == "≡":
+                posible = False
+            else:
+                barco += 1
+    return barco
         
 def juego():
     pygame.init()
     clock = pygame.time.Clock()
     barcosj1 = [[(1,1),(1,2),(1,3),(1,4)]]
+    num_barco = 0
 
     portaaviones ="≡"
     mulportaaviones = 5
@@ -164,47 +176,53 @@ def juego():
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
-    barcosj1 = [[(1,1),(1,2),(1,3)]]
+    barcosj1 = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3)]]
     game = True
-    while game ==  True:
-        #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
-        #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
-        estado = "posicionar barcos"
-        if keyboard.is_pressed('w'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((-1,0),barcosj1,0,j1_tablerobarcos)
-            presionado = True
-        elif keyboard.is_pressed('s'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((1,0),barcosj1,0,j1_tablerobarcos)
-            presionado = True
-        elif keyboard.is_pressed('d'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((0,1),barcosj1,0,j1_tablerobarcos)
-            presionado = True
-        elif keyboard.is_pressed('a'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((0,-1),barcosj1,0,j1_tablerobarcos)
-            presionado = True
-        elif keyboard.is_pressed('r'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    if barcosj1[0][0][0]==barcosj1[0][1][0]:
-                        rotacion_vertical(barcosj1,0,j1_tablerobarcos)
-                    else:
-                        rotacion_horizontal(barcosj1,0,j1_tablerobarcos)
-            presionado = True
-        else:
-            presionado = False
-        visualizar_barco(barcosj1,j1_tablerobarcos)
-        dibujar(j1_tablerodisparos)
-        dibujar(j1_tablerobarcos)
-        clock.tick(24)
-        os.system("cls")
+    while num_barco <= 4:
+        while game == True:
+            #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
+            #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
+            estado = "posicionar barcos"
+            if keyboard.is_pressed('w'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
+                presionado = True
+            elif keyboard.is_pressed('s'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
+                presionado = True
+            elif keyboard.is_pressed('d'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
+                presionado = True
+            elif keyboard.is_pressed('a'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
+                presionado = True
+            elif keyboard.is_pressed('r'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        if barcosj1[0][0][0]==barcosj1[0][1][0]:
+                            rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
+                        else:
+                            rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)
+                presionado = True
+            elif keyboard.is_pressed('enter'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        confirmar_barco(barcosj1,num_barco)
+                presionado = True
+            else:
+                presionado = False
+            visualizar_barco(barcosj1,j1_tablerobarcos)
+            dibujar(j1_tablerodisparos)
+            dibujar(j1_tablerobarcos)
+            clock.tick(24)
+            os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas"]
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
