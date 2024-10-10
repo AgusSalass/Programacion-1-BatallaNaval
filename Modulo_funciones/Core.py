@@ -73,7 +73,7 @@ def visualizar_barco(barcos,tablero_barcos):
 def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
     posible = True
-    for coordenada in range(len(barcos[0])):
+    for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
             tablero[old_x][old_y] = "~"
@@ -101,12 +101,14 @@ def rotacion_a_horizontal(barcos,barco,tablero):
                 barcos[barco][coordenada]=(new_x,new_y)
 
 def confirmar_barco(barcos,barco):
+    aux = copy.deepcopy(barcos[barco])
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
             if old_x == "≡" or  old_y == "≡":
                 posible = False
+                barcos[barco] = copy.deepcopy(aux)
     if posible:
         barco+=1
     return barco
