@@ -3,6 +3,7 @@ import pygame
 import keyboard
 import copy
 
+
 def mostrar_equipo():
     print("Este es nuestro equipo")
     for miembro in equipo:
@@ -227,8 +228,6 @@ def juego():
         visualizar_barco(barcosj1,j1_tablerobarcos)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
-        print(barcosj1)
-        print(todos_barcos)
         clock.tick(24)
         os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
