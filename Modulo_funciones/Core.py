@@ -54,7 +54,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
     for i in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][i]
-            tablero[old_x][old_y] = "~"
+            tablero[old_x][old_y] = (f"\033[36m~\033[0m")
             x,y = direccion
             new_x = old_x + x
             new_y = old_y + y
@@ -69,7 +69,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
         for coordenada in barco:
-            tablero_barcos[coordenada[0]][coordenada[1]] = "≡"
+            tablero_barcos[coordenada[0]][coordenada[1]] = (f"\033[33m≡\033[0m")
             
 def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -77,7 +77,7 @@ def rotacion_a_vertical(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = "~"
+            tablero[old_x][old_y] = f"\033[36m~\033[0m"
             new_x = old_x + coordenada
             new_y = old_y - coordenada
             if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
@@ -92,7 +92,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = "~"
+            tablero[old_x][old_y] = (f"\033[36m~\033[0m")
             new_x = old_x - coordenada
             new_y = old_y + coordenada
             if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
@@ -106,85 +106,84 @@ def confirmar_barco(barcos,barco):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
-            for barco2 in range(len(barcos)):
-                if barco2 != barco:
-                    for coordenada2 in range(len(barcos[barco2])):
-                        if barcos[barco][coordenada] == barcos[barco2][coordenada2]:
-                            posible = False
+            old_x,old_y = barcos[barco][coordenada]
+            if old_x == (f"\033[33m≡\033[0m") or  old_y == (f"\033[33m≡\033[0m"):
+                posible = False
+                barcos[barco] = copy.deepcopy(aux)
     if posible:
         barco+=1
     return barco
-        
+       
 def juego():
     pygame.init()
     clock = pygame.time.Clock()
-
-    portaaviones ="≡"
+    o=(f"\033[36m~\033[0m")
+    b=(f"\033[33m≡\033[0m")
+    portaaviones =b
     mulportaaviones = 5
-    destructor = "≡"
+    destructor = b
     muldestructor = 4
-    crucero1 = "≡"
-    mulcrucero1= 3
-    crucero2 ="≡"
+    crucero1 = (f"\033[31mDestruido\033[0m")
+    mulcrucero1= 1
+    crucero2 =b
     mulcrucero2 = 3
-    lancha="≡"
+    lancha=b
     mullancha = 2
     # ░≡¤
+
+   
     j1_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗","portaaviones: ",portaaviones*mulportaaviones],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║","destructor: ",destructor*muldestructor],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║","crucero: ",crucero1*mulcrucero1],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║","crucero: ",crucero2*mulcrucero2],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║","lancha: ", lancha*mullancha],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║","destructor: ",destructor*muldestructor],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║","crucero: ",crucero1*mulcrucero1],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║","crucero: ",crucero2*mulcrucero2],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║","lancha: ", lancha*mullancha],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
                          ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
     j1_tablerobarcos   = [
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     j2_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
                          ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
     j2_tablerobarcos   = [
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     num_barco = 0
-    todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
-    barcosj1 = [[], [], [], [], []]
+    barcosj1 = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     game = True
     while game == True:
-        if barcosj1[num_barco] == []:
-            barcosj1[num_barco] = todos_barcos[num_barco]
         #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
         #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
         estado = "posicionar barcos"
