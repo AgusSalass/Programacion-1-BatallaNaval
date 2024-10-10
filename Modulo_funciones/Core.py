@@ -114,6 +114,21 @@ def confirmar_barco(barcos,barco):
     if posible:
         barco+=1
     return barco
+
+def confirmar_tiro(pos_bomba,tirosj1):
+#TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
+    confirmable=True
+    if len(tirosj1)==0:
+        return confirmable
+    else:
+        if confirmable:
+            for tiro in range(len(tirosj1)):
+                if tirosj1[tiro]==pos_bomba:
+                    confirmable==False
+        if confirmable:
+            tirosj1.append(pos_bomba)
+    
+    return confirmable
        
 def juego():
     pygame.init()
@@ -184,6 +199,7 @@ def juego():
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
+    tirosj1=[]
     game = True
     while game == True:
         if barcosj1[num_barco] == []:
@@ -223,6 +239,9 @@ def juego():
             if presionado == False:
                 if estado == "posicionar barcos":
                     num_barco = confirmar_barco(barcosj1,num_barco)
+                elif estado =="posicionar disparos":
+                    confirmar_tiro(pos_bomba,tirosj1)
+                    pass#TODO hacer lo mismo en todo, llamar funciones
             presionado = True
         else:
             presionado = False
