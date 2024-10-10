@@ -107,22 +107,20 @@ def confirmar_barco(barcos,barco):
             old_x,old_y = barcos[barco][coordenada]
             if old_x == "≡" or  old_y == "≡":
                 posible = False
-            else:
-                barco += 1
+    if posible:
+        barco+=1
     return barco
         
 def juego():
     pygame.init()
     clock = pygame.time.Clock()
-    barcosj1 = [[(1,1),(1,2),(1,3),(1,4)]]
-    num_barco = 0
 
     portaaviones ="≡"
     mulportaaviones = 5
     destructor = "≡"
     muldestructor = 4
-    crucero1 = "destruido"
-    mulcrucero1= 1
+    crucero1 = "≡"
+    mulcrucero1= 3
     crucero2 ="≡"
     mulcrucero2 = 3
     lancha="≡"
@@ -130,12 +128,12 @@ def juego():
     # ░≡¤
     j1_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗","portaaviones: ",portaaviones*mulportaaviones],
                          ["║","~","~","~","~","~","~","~","~","~","~","║","destructor: ",destructor*muldestructor],
-                         ["║","~","░","~","~","~","~","~","~","~","~","║","crucero: ",crucero1*mulcrucero1],
-                         ["║","~","~","~","~","~","~","~","~","░","~","║","crucero: ",crucero2*mulcrucero2],
+                         ["║","~","~","~","~","~","~","~","~","~","~","║","crucero: ",crucero1*mulcrucero1],
+                         ["║","~","~","~","~","~","~","~","~","~","~","║","crucero: ",crucero2*mulcrucero2],
                          ["║","~","~","~","~","~","~","~","~","~","~","║","lancha: ", lancha*mullancha],
-                         ["║","~","~","~","¤","¤","~","~","~","~","~","║"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
-                         ["║","~","~","~","░","░","░","~","~","~","~","║"],
+                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
+                         ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
                          ["║","~","~","~","~","~","~","~","~","~","~","║"],
@@ -176,7 +174,8 @@ def juego():
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
-    barcosj1 = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3)]]
+    num_barco = 0
+    barcosj1 = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     game = True
     while num_barco <= 4:
         while game == True:
@@ -214,7 +213,7 @@ def juego():
             elif keyboard.is_pressed('enter'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        confirmar_barco(barcosj1,num_barco)
+                        num_barco = confirmar_barco(barcosj1,num_barco)
                 presionado = True
             else:
                 presionado = False
@@ -224,5 +223,5 @@ def juego():
             clock.tick(24)
             os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
-          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas"]
+          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas","McLovin"]
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
