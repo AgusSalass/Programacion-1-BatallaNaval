@@ -46,7 +46,7 @@ def dibujar(tablero):
         
 def generar_tablero():
     pass
-
+#Hardcodeame el tablero
 def movimiento_barco(direccion,barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
     posible = True
