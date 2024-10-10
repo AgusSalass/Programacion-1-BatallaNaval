@@ -105,10 +105,11 @@ def confirmar_barco(barcos,barco):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
-            old_x,old_y = barcos[barco][coordenada]
-            if old_x == "≡" or  old_y == "≡":
-                posible = False
-                barcos[barco] = copy.deepcopy(aux)
+            for barco2 in range(len(barcos)):
+                if barco2 != barco:
+                    for coordenada2 in range(len(barcos[barco2])):
+                        if barcos[barco][coordenada] == barcos[barco2][coordenada2]:
+                            posible = False
     if posible:
         barco+=1
     return barco
@@ -177,9 +178,12 @@ def juego():
                           ["║","~","~","~","~","~","~","~","~","~","~","║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     num_barco = 0
-    barcosj1 = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
+    todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
+    barcosj1 = [[], [], [], [], []]
     game = True
     while game == True:
+        if barcosj1[num_barco] == []:
+            barcosj1[num_barco] = todos_barcos[num_barco]
         #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
         #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
         estado = "posicionar barcos"
@@ -223,6 +227,8 @@ def juego():
         visualizar_barco(barcosj1,j1_tablerobarcos)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
+        print(barcosj1)
+        print(todos_barcos)
         clock.tick(24)
         os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
