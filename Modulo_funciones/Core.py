@@ -35,8 +35,9 @@ def menu():
             else:
                 print("Opcion invalida")
             input()
-        except:
+        except TypeError:
             print("Error, debe usar un numero")
+            print(TypeError)
             input()
             
 def dibujar(tablero):
@@ -47,14 +48,14 @@ def dibujar(tablero):
         
 def generar_tablero():
     pass
-#Hardcodeame el tablero
+
 def movimiento_barco(direccion,barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
     posible = True
     for i in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][i]
-            tablero[old_x][old_y] = (f"\033[36m~\033[0m")
+            tablero[old_x][old_y] = (f"\033[36m ~\033[0m")
             x,y = direccion
             new_x = old_x + x
             new_y = old_y + y
@@ -69,7 +70,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
         for coordenada in barco:
-            tablero_barcos[coordenada[0]][coordenada[1]] = (f"\033[90m≡\033[0m")
+            tablero_barcos[coordenada[0]][coordenada[1]] = (f"\033[90m ≡\033[0m")
             
 def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -77,7 +78,7 @@ def rotacion_a_vertical(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = f"\033[36m~\033[0m"
+            tablero[old_x][old_y] = f"\033[36m ~\033[0m"
             new_x = old_x + coordenada
             new_y = old_y - coordenada
             if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
@@ -92,7 +93,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = (f"\033[36m~\033[0m")
+            tablero[old_x][old_y] = (f"\033[36m ~\033[0m")
             new_x = old_x - coordenada
             new_y = old_y + coordenada
             if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
@@ -115,28 +116,46 @@ def confirmar_barco(barcos,barco):
         barco+=1
     return barco
 
-def confirmar_tiro(pos_bomba,tirosj1):
+def visualizar_disparos(bomba,tablero_disparos):
+    for barco in bomba:
+        for coordenada in barco:
+            tablero_disparos[coordenada[0]][coordenada[1]] = (f"\033[31m ¤\033[0m")
+
+def movimiento_disparo(direccion,bomba,tablero):
+    posible = True
+    if posible:
+        old_x,old_y = bomba[0][0]
+        tablero[old_x][old_y] = (f"\033[36m ~\033[0m")
+        x,y = direccion
+        new_x = old_x + x
+        new_y = old_y + y
+        if new_x <= 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero)-1:
+            posible = False
+        else:
+            bomba[0][0] = (new_x,new_y)
+    return bomba
+
+def confirmar_tiro(posicion_tiro,tiros):
 #TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
     confirmable=True
-    if len(tirosj1)==0:
+    if len(tiros)==0:
         return confirmable
     else:
         if confirmable:
-            for tiro in range(len(tirosj1)):
-                if tirosj1[tiro]==pos_bomba:
+            for tiro in range(len(tiros)):
+                if tiros[tiro]==posicion_tiro:
                     confirmable==False
-        if confirmable:
-            tirosj1.append(pos_bomba)
-    
+            if confirmable:
+                tiros.append(posicion_tiro)
     return confirmable
        
 def juego():
     cursor.hide()
     pygame.init()
     clock = pygame.time.Clock()
-    o=(f"\033[36m~\033[0m")
-    b=(f"\033[90m≡\033[0m")
-    portaaviones =b
+    o = (f"\033[36m ~\033[0m")
+    b = (f"\033[90m ≡\033[0m")
+    portaaviones = b
     mulportaaviones = 5
     destructor = b
     muldestructor = 4
@@ -144,90 +163,100 @@ def juego():
     mulcrucero1= 1
     crucero2 = b
     mulcrucero2 = 3
-    lancha= b
+    lancha = b
     mullancha = 2
-    pos_bomba=0
     # ░≡¤
 
    
-    j1_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗","portaaviones: ",portaaviones*mulportaaviones],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║","destructor: ",destructor*muldestructor],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║","crucero: ",crucero1*mulcrucero1],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║","crucero: ",crucero2*mulcrucero2],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║","lancha: ", lancha*mullancha],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
+    j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗","portaaviones: ",portaaviones*mulportaaviones],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║","destructor: ",destructor*muldestructor],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║","crucero: ",crucero1*mulcrucero1],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║","crucero: ",crucero2*mulcrucero2],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║","lancha: ", lancha*mullancha],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
     j1_tablerobarcos   = [
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
     j2_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
     j2_tablerobarcos   = [
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
-    tirosj1=[]
+    tirosj1=[[]]
+    pos_bomba=[[(1,1)]]
     game = True
+    estado = "posicionar barcos"
     while game == True:
-        if barcosj1[num_barco] == []:
+        if num_barco <=4 and barcosj1[num_barco] == []:
             barcosj1[num_barco] = todos_barcos[num_barco]
+        elif num_barco == 5:
+            estado = "posicionar disparos"
         #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
         #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
-        estado = "posicionar barcos"
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
+                elif estado == "posicionar disparos":
+                    movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('s'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
+                elif estado == "posicionar disparos":
+                    movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('d'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
+                elif estado == "posicionar disparos":
+                    movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('a'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
+                elif estado == "posicionar disparos":
+                    movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('r'):
             if presionado == False:
@@ -247,9 +276,8 @@ def juego():
             presionado = True
         else:
             presionado = False
-        if num_barco == 4:
-            estado = "posicionar disparos"
         visualizar_barco(barcosj1,j1_tablerobarcos)
+        visualizar_disparos(pos_bomba,j1_tablerodisparos)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
         clock.tick(24)
