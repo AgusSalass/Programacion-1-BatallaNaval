@@ -2,7 +2,7 @@ import os
 import pygame
 import keyboard
 import copy
-
+import cursor
 
 def mostrar_equipo():
     print("Este es nuestro equipo")
@@ -69,7 +69,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
         for coordenada in barco:
-            tablero_barcos[coordenada[0]][coordenada[1]] = (f"\033[33m≡\033[0m")
+            tablero_barcos[coordenada[0]][coordenada[1]] = (f"\033[90m≡\033[0m")
             
 def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -131,20 +131,22 @@ def confirmar_tiro(pos_bomba,tirosj1):
     return confirmable
        
 def juego():
+    cursor.hide()
     pygame.init()
     clock = pygame.time.Clock()
     o=(f"\033[36m~\033[0m")
-    b=(f"\033[33m≡\033[0m")
+    b=(f"\033[90m≡\033[0m")
     portaaviones =b
     mulportaaviones = 5
     destructor = b
     muldestructor = 4
     crucero1 = (f"\033[31mDestruido\033[0m")
     mulcrucero1= 1
-    crucero2 =b
+    crucero2 = b
     mulcrucero2 = 3
-    lancha=b
+    lancha= b
     mullancha = 2
+    pos_bomba=0
     # ░≡¤
 
    
