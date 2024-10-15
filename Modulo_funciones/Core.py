@@ -280,6 +280,7 @@ def juego():
         visualizar_disparos(pos_bomba,j1_tablerodisparos)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
+        print(tirosj1)
         clock.tick(24)
         os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
