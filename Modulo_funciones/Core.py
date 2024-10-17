@@ -116,15 +116,16 @@ def confirmar_barco(barcos,barco):
         barco+=1
     return barco
 
-def visualizar_disparos(bomba,tablero_disparos):
-    for barco in bomba:
+def visualizar_disparos(disparo,tablero_disparos,bombas):
+    for barco in bombas:
         for coordenada in barco:
             tablero_disparos[coordenada[0]][coordenada[1]] = (f"\033[31m ¤\033[0m")
+    tablero_disparos[disparo[0]][disparo[1]] = (f"\033[37m ¤\033[0m")
 
 def movimiento_disparo(direccion,bomba,tablero):
     posible = True
     if posible:
-        old_x,old_y = bomba[0][0]
+        old_x,old_y = bomba
         tablero[old_x][old_y] = (f"\033[36m ~\033[0m")
         x,y = direccion
         new_x = old_x + x
@@ -132,13 +133,14 @@ def movimiento_disparo(direccion,bomba,tablero):
         if new_x <= 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero)-1:
             posible = False
         else:
-            bomba[0][0] = (new_x,new_y)
+            bomba = (new_x,new_y)
     return bomba
 
-def confirmar_tiro(posicion_tiro,tiros):
+def confirmar_tiro(posicion_tiro,tiros,confirmable):
 #TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
-    confirmable=True
-    if len(tiros)==0:
+    confirmable = True
+    if tiros == []:
+        print("1")
         return confirmable
     else:
         if confirmable:
@@ -230,13 +232,14 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
-    num_barco = 0
+    num_barco = 5
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
-    tirosj1=[[]]
-    pos_bomba=[[(1,1)]]
+    tirosj1 = []
+    pos_bomba = (1,1)
     game = True
     estado = "posicionar barcos"
+    confirmado = True
     while game == True:
         if num_barco <=4 and barcosj1[num_barco] == []:
             barcosj1[num_barco] = todos_barcos[num_barco]
@@ -249,28 +252,28 @@ def juego():
                 if estado == "posicionar barcos":
                     movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
                 elif estado == "posicionar disparos":
-                    movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
+                    pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('s'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
                 elif estado == "posicionar disparos":
-                    movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
+                    pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('d'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
                 elif estado == "posicionar disparos":
-                    movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
+                    pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('a'):
             if presionado == False:
                 if estado == "posicionar barcos":
                     movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
                 elif estado == "posicionar disparos":
-                    movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
+                    pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
             presionado = True
         elif keyboard.is_pressed('r'):
             if presionado == False:
@@ -285,14 +288,19 @@ def juego():
                 if estado == "posicionar barcos":
                     num_barco = confirmar_barco(barcosj1,num_barco)
                 elif estado =="posicionar disparos":
-                    confirmar_tiro(pos_bomba,tirosj1)
+                    confirmado = confirmar_tiro(pos_bomba,tirosj1,confirmado)
+                    print("6")
+                    if confirmado:
+                        print("7")
+                        tirosj1.append(pos_bomba)
+                        print("8")
+                        pos_bomba = (1,1)
                     pass#TODO hacer lo mismo en todo, llamar funciones
             presionado = True
         else:
             presionado = False
         visualizar_barco(barcosj1,j1_tablerobarcos)
-        visualizar_disparos(pos_bomba,j1_tablerodisparos)
-        deteccion_disparo(pos_bomba, barcosj1)
+        visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
         print(tirosj1)
