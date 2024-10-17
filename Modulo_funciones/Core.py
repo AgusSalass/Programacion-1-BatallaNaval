@@ -149,6 +149,20 @@ def confirmar_tiro(posicion_tiro,tiros):
                 tiros.append(posicion_tiro)
     return confirmable
        
+def deteccion_disparo(disparo, lista_barcos):
+    i = 0
+    encontrado = False
+    while i < len(lista_barcos) and encontrado == False:
+        j = 0
+        while j < len(lista_barcos[i]) and encontrado == False:
+            if disparo == lista_barcos[i][j] and encontrado == False:
+                del lista_barcos[i][j]
+                encontrado = True
+                if not lista_barcos[i]:
+                    del lista_barcos[i]
+            j += 1
+        i += 1
+
 def juego():
     cursor.hide()
     pygame.init()
@@ -278,6 +292,7 @@ def juego():
             presionado = False
         visualizar_barco(barcosj1,j1_tablerobarcos)
         visualizar_disparos(pos_bomba,j1_tablerodisparos)
+        deteccion_disparo(pos_bomba, barcosj1)
         dibujar(j1_tablerodisparos)
         dibujar(j1_tablerobarcos)
         print(tirosj1)
