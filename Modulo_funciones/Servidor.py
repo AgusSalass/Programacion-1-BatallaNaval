@@ -4,13 +4,13 @@ import socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('192.168.191.5', 8080)
+server_address = ('169.254.67.82', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
 
 # Listen for incoming connections
-server_socket.listen(2)  # Allow up to 2 connections
+server_socket.listen(3)  # Allow up to 2 connections
 
 print("Server started. Waiting for connections...")
 

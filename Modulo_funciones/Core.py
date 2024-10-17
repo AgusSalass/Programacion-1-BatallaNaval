@@ -117,9 +117,8 @@ def confirmar_barco(barcos,barco):
     return barco
 
 def visualizar_disparos(disparo,tablero_disparos,bombas):
-    for barco in bombas:
-        for coordenada in barco:
-            tablero_disparos[coordenada[0]][coordenada[1]] = (f"\033[31m ¤\033[0m")
+    for coordenada in bombas:
+        tablero_disparos[coordenada[0]][coordenada[1]] = (f"\033[31m ¤\033[0m")
     tablero_disparos[disparo[0]][disparo[1]] = (f"\033[37m ¤\033[0m")
 
 def movimiento_disparo(direccion,bomba,tablero):
@@ -143,13 +142,12 @@ def confirmar_tiro(posicion_tiro,tiros,confirmable):
         print("1")
         return confirmable
     else:
-        if confirmable:
-            for tiro in range(len(tiros)):
-                if tiros[tiro]==posicion_tiro:
-                    confirmable==False
-            if confirmable:
-                tiros.append(posicion_tiro)
-    return confirmable
+        for tiro in range(len(tiros)):
+            print("2")
+            if tiros[tiro] == posicion_tiro:
+                print("3")
+                confirmable = False
+        return confirmable
        
 def deteccion_disparo(disparo, lista_barcos):
     i = 0
@@ -232,7 +230,8 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
-    num_barco = 5
+    #TODO hacer un radar al costado del tablero
+    num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
     tirosj1 = []
