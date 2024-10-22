@@ -29,32 +29,38 @@ j1_tablerodisparos= [["╔","══","══","══","══","══","══
 def deteccion_hits(hit, lista_barcos, tablero, xportaaviones, xdestructor, xcrucero1, xcrucero2, xlancha):
     i = 0
     encontrado = False
-    while i < len(lista_barcos) and encontrado == False:
+
+    diccionario_barcos = {
+        0: ("portaaviones", xportaaviones),
+        1: ("destructor", xdestructor),
+        2: ("crucero1", xcrucero1),
+        3: ("crucero2", xcrucero2),
+        4: ("lancha", xlancha)
+    }
+
+    while i < len(lista_barcos) and not encontrado:
         j = 0
-        while j < len(lista_barcos[i]) and encontrado == False:
-            if hit == lista_barcos[i][j] and encontrado == False:
+        while j < len(lista_barcos[i]) and not encontrado:
+            if hit == lista_barcos[i][j] and not encontrado:
                 del lista_barcos[i][j]
                 encontrado = True
                 if lista_barcos[i] == []:
-                    #hardcodeado, ver como evitar
-                    if i == 0:
-                        tablero[i][13] = (f"\033[31mDestruido\033[0m")
+                    barco, valor = diccionario_barcos[i]
+                    tablero[i][13] = (f"\033[31mDestruido\033[0m")
+                    if barco == "portaaviones":
                         xportaaviones = 1
-                    elif i == 1:
-                        tablero[i][13] = (f"\033[31mDestruido\033[0m")
+                    elif barco == "destructor":
                         xdestructor = 1
-                    elif i == 2:
-                        tablero[i][13] = (f"\033[31mDestruido\033[0m")
+                    elif barco == "crucero1":
                         xcrucero1 = 1
-                    elif i == 3:
-                        tablero[i][13] = ( f"\033[31mDestruido\033[0m")
+                    elif barco == "crucero2":
                         xcrucero2 = 1
-                    elif i == 4:
-                        tablero[i][13] = (f"\033[31mDestruido\033[0m")
+                    elif barco == "lancha":
                         xlancha = 1
             j += 1
         i += 1
     return xportaaviones, xdestructor, xcrucero1, xcrucero2, xlancha
+    #TODO mejore un poquito usando diccionario pero sigue estando medio hardcodeado
 
 def dibujar(tablero):
     for fila in tablero:

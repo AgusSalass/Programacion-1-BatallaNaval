@@ -15,9 +15,9 @@ if not os.path.exists(path_archivo):
     except:
          print("error de grabado")
 
-nuevo_usuario = str(input("usuario (debe ser de 3 letras): "))
+nuevo_usuario = str(input("usuario (debe ser de 3 letras): ")).upper()
 while not re.match("^[a-zA-Z]{3}$", nuevo_usuario):
-	nuevo_usuario = str(input("usuario (debe ser de 3 letras): "))
+	nuevo_usuario = str(input("usuario (debe ser de 3 letras): ")).upper()
 nueva_contrasena = str(input("contraseña: "))
 
 try:
@@ -28,9 +28,9 @@ try:
 
 	while nuevo_usuario in usuarios:
 		print("usuario ya existe")
-		nuevo_usuario = str(input("usuario (debe ser de 3 letras): "))
+		nuevo_usuario = str(input("usuario (debe ser de 3 letras): ")).upper()
 		while not re.match("^[a-zA-Z]{3}$", nuevo_usuario):
-			nuevo_usuario = str(input("usuario (debe ser de 3 letras): "))
+			nuevo_usuario = str(input("usuario (debe ser de 3 letras): ")).upper()
 		nueva_contrasena = str(input("contraseña: "))	
 	else:
 		usuarios[nuevo_usuario] = {
