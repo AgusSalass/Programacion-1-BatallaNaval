@@ -2,5 +2,9 @@
     "12345": {
         "contrasena": "12345",
         "puntaje": 0
+    },
+    "123456": {
+        "contrasena": "111111",
+        "puntaje": 0
     }
 }
