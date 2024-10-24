@@ -71,7 +71,7 @@ while repetir:
 	os.system("cls")
 	print ("6-Sign Up")
 	print ("7-Log In")
-	op=int(input("Eliga una opcion: "))
+	op=int(input("Elija una opcion: "))
 	if op == 6:
 		nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
 		while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario):

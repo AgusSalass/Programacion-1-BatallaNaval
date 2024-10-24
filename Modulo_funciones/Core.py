@@ -22,7 +22,7 @@ def menu():
         print ("2-Proyecto")
         print ("4-Salir")
         try:
-            op=int(input("Eliga una opcion: "))
+            op=int(input("Elija una opcion: "))
             
             if op == 1:
                 mostrar_equipo()

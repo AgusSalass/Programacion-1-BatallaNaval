@@ -10,7 +10,7 @@ server_address = ('192.168.0.101', 8080)
 server_socket.bind(server_address)
 
 # Listen for incoming connections
-server_socket.listen(3)  # Allow up to 2 connections
+server_socket.listen(2)  # Allow up to 2 connections
 
 print("Server started. Waiting for connections...")
 
