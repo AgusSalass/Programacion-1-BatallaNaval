@@ -1,10 +1,19 @@
 {
     "12345": {
         "contrasena": "12345",
-        "puntaje": 0
+        "puntaje": 5
     },
     "123456": {
         "contrasena": "111111",
-        "puntaje": 0
+        "puntaje": 2
+    },
+    "vrevcvdf": {
+        "contrasena": "sdfss",
+        "puntaje": 8
+    },
+    "qwert": {
+        "contrasena": "qwert",
+        "puntaje": 2
     }
 }
+
