@@ -3,6 +3,8 @@ import pygame
 import keyboard
 import copy
 import cursor
+import json
+import sys
 
 def mostrar_equipo():
     print("Este es nuestro equipo")
@@ -13,7 +15,6 @@ def mostrar_equipo():
 def mostrar_proyecto():
     print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
 
-#menu
 def menu():
     repetir = True
     while repetir:
@@ -78,7 +79,7 @@ def rotacion_a_vertical(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = f"\033[36m ~\033[0m"
+            tablero[old_x][old_y] = (f"\033[36m ~\033[0m")
             new_x = old_x + coordenada
             new_y = old_y - coordenada
             if new_x < 0 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero):
@@ -102,8 +103,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
 
-def confirmar_barco(barcos,barco):
-    aux = copy.deepcopy(barcos[barco])
+def confirmar_barco(barcos,barco,partido,arch_tablero):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
@@ -114,6 +114,17 @@ def confirmar_barco(barcos,barco):
                             posible = False
     if posible:
         barco+=1
+    if barco == 5:
+        print("Creando")
+        tableros = json.dumps(partido, indent=4)
+        try:
+            contenido = open(arch_tablero, "w")
+            contenido.write(tableros)
+            contenido.close()
+            print("crado")
+        except TypeError:
+            print(TypeError)
+            print("error de grabado de cambios")
     return barco
 
 def visualizar_disparos(disparo,tablero_disparos,bombas):
@@ -135,7 +146,7 @@ def movimiento_disparo(direccion,bomba,tablero):
             bomba = (new_x,new_y)
     return bomba
 
-def confirmar_tiro(posicion_tiro,tiros,confirmable):
+def confirmar_tiro(posicion_tiro,tiros,confirmable, partido):
 #TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
     confirmable = True
     if tiros == []:
@@ -167,6 +178,8 @@ def juego():
     cursor.hide()
     pygame.init()
     clock = pygame.time.Clock()
+    path_tableros = os.path.dirname(os.path.abspath(__file__))
+    arch_tab = os.path.join(path_tableros, f"Tableros.json")
     o = (f"\033[36m ~\033[0m")
     b = (f"\033[90m ≡\033[0m")
     portaaviones = b
@@ -181,7 +194,7 @@ def juego():
     mullancha = 2
     # ░≡¤
 
-   
+    
     j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗","portaaviones: ",portaaviones*mulportaaviones],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║","destructor: ",destructor*muldestructor],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║","crucero: ",crucero1*mulcrucero1],
@@ -234,74 +247,88 @@ def juego():
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
+    barcosj2 = [[], [], [], [], []]
     tirosj1 = []
+    tirosj2 = []
     pos_bomba = (1,1)
+    turno = 1
+    miturno = 1
     game = True
     estado = "posicionar barcos"
     confirmado = True
+    partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "jugador 2": {"tablero disparos": j2_tablerodisparos,
+                "tablero barcos": j2_tablerobarcos}, "turno": turno}
+    #TODO chequear en vez de mandar todos los tableros se manda nada mas el tiro y el turno
     while game == True:
         if num_barco <=4 and barcosj1[num_barco] == []:
             barcosj1[num_barco] = todos_barcos[num_barco]
         elif num_barco == 5:
             estado = "posicionar disparos"
-        #Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
-        #elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
-        if keyboard.is_pressed('w'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
-                elif estado == "posicionar disparos":
-                    pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
-            presionado = True
-        elif keyboard.is_pressed('s'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
-                elif estado == "posicionar disparos":
-                    pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
-            presionado = True
-        elif keyboard.is_pressed('d'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
-                elif estado == "posicionar disparos":
-                    pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
-            presionado = True
-        elif keyboard.is_pressed('a'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
-                elif estado == "posicionar disparos":
-                    pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
-            presionado = True
-        elif keyboard.is_pressed('r'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    if barcosj1[num_barco][0][0]==barcosj1[num_barco][1][0]:
-                        rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
-                    else:
-                        rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)
-            presionado = True
-        elif keyboard.is_pressed('enter'):
-            if presionado == False:
-                if estado == "posicionar barcos":
-                    num_barco = confirmar_barco(barcosj1,num_barco)
-                elif estado =="posicionar disparos":
-                    confirmado = confirmar_tiro(pos_bomba,tirosj1,confirmado)
-                    print("6")
-                    if confirmado:
-                        print("7")
-                        tirosj1.append(pos_bomba)
-                        print("8")
-                        pos_bomba = (1,1)
-                    pass#TODO hacer lo mismo en todo, llamar funciones
-            presionado = True
+        """
+        
+        Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
+        elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
+        
+        """
+        if turno == miturno:
+            if keyboard.is_pressed('w'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((-1,0),barcosj1,num_barco,partida["Jugador 1"]["tablero barcos"])
+                    elif estado == "posicionar disparos":
+                        pos_bomba = movimiento_disparo((-1,0),pos_bomba,partida["Jugador 1"]["tablero disparos"])
+                presionado = True
+            elif keyboard.is_pressed('s'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((1,0),barcosj1,num_barco,partida["Jugador 1"]["tablero barcos"])
+                    elif estado == "posicionar disparos":
+                        pos_bomba = movimiento_disparo((1,0),pos_bomba,partida["Jugador 1"]["tablero disparos"])
+                presionado = True
+            elif keyboard.is_pressed('d'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((0,1),barcosj1,num_barco,partida["Jugador 1"]["tablero barcos"])
+                    elif estado == "posicionar disparos":
+                        pos_bomba = movimiento_disparo((0,1),pos_bomba,partida["Jugador 1"]["tablero disparos"])
+                presionado = True
+            elif keyboard.is_pressed('a'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        movimiento_barco((0,-1),barcosj1,num_barco,partida["Jugador 1"]["tablero barcos"])
+                    elif estado == "posicionar disparos":
+                        pos_bomba = movimiento_disparo((0,-1),pos_bomba,partida["Jugador 1"]["tablero disparos"])
+                presionado = True
+            elif keyboard.is_pressed('r'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        if barcosj1[num_barco][0][0]==barcosj1[num_barco][1][0]:
+                            rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
+                        else:
+                            rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)#TODO cuando se pone la direccion con el diccionario se rompe
+                presionado = True
+            elif keyboard.is_pressed('enter'):
+                if presionado == False:
+                    if estado == "posicionar barcos":
+                        num_barco = confirmar_barco(barcosj1,num_barco, partida, arch_tab)
+                    elif estado =="posicionar disparos":
+                        confirmado = confirmar_tiro(pos_bomba,tirosj1,confirmado, partida, arch_tab)
+                        print("6")
+                        if confirmado:
+                            print("7")
+                            tirosj1.append(pos_bomba)
+                            print("8")
+                            pos_bomba = (1,1)
+                presionado = True
+            else:
+                presionado = False
         else:
-            presionado = False
-        visualizar_barco(barcosj1,j1_tablerobarcos)
+            print("Esperando oponente...")
+        sys.stdin.flush()
+        visualizar_barco(barcosj1,partida["Jugador 1"]["tablero barcos"])
         visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
         dibujar(j1_tablerodisparos)
-        dibujar(j1_tablerobarcos)
+        dibujar(partida["Jugador 1"]["tablero barcos"])
         print(tirosj1)
         clock.tick(24)
         os.system("cls")
