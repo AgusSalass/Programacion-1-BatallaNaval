@@ -190,12 +190,15 @@ def menu():
                     usuarios = leer_archivo()
                     sign_up(nuevo_usuario, usuarios)
                 elif op == 3:
-                    repetir = False
                     mostrar_equipo()
+                    print()
+                    input("Presione 'Enter' para continuar: ")
                 elif op == 4:
-                    repetir = False
                     mostrar_proyecto()
+                    print()
+                    input("Presione 'Enter' para continuar: ")
                 elif op == 5:
+                    os.system("cls")
                     repetir = False
             presionado = True
         else:
