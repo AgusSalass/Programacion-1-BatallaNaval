@@ -7,40 +7,93 @@ import json
 import sys
 
 def mostrar_equipo():
+    os.system("cls")
     print("Este es nuestro equipo")
     for miembro in equipo:
         print(miembro)
 
 
 def mostrar_proyecto():
+    os.system("cls")
     print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
 
 def menu():
+    cursor.hide()
     repetir = True
+    op = 0
+    submarino = ["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡆",
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣶",
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿",
+                "⠀⣶⡄⢀⣀⣤⣴⡶⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⢿⣷⣶⣤⣀",
+                "⣠⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⡇",
+                "⠘⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃",
+                "⠀⠛⠁⠀⠀⠉⠙⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠁"]
+    x = 0
+    pygame.init()
+    clock = pygame.time.Clock()
     while repetir:
+        # print("░"*4865)
+        print("\033[0;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        print("\033[1;25H█████▄░▄████▄░████████░▄████▄░██░░░░░██░░░░░▄████▄░░░██████▄░▄████▄░██░░░██░▄████▄░██░░░░")
+        print("\033[2;25H██░░██░██░░██░░░░██░░░░██░░██░██░░░░░██░░░░░██░░██░░░██░░░██░██░░██░██░░░██░██░░██░██░░░░")
+        print("\033[3;25H█████░░██░░██░░░░██░░░░██░░██░██░░░░░██░░░░░██░░██░░░██░░░██░██░░██░██░░░██░██░░██░██░░░░")
+        print("\033[4;25H██░░██░██████░░░░██░░░░██████░██░░░░░██░░░░░██████░░░██░░░██░██████░██░░██░░██████░██░░░░")
+        print("\033[5;25H█████▀░██░░██░░░░██░░░░██░░██░██████░██████░██░░██░░░██░░░██░██░░██░▀███▀░░░██░░██░██████")
+        print("\033[6;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        y = 7
+        for i in range(len(submarino)):
+            print(f"\033[{int(y+i)};{int(x)}H{submarino[i]}")
+        x += 0.3
+        if x >= 112 + len(submarino[4]):
+            x = 0
+        clock.tick(24)
         os.system("cls")
-        print ("1-Equipo")
-        print ("2-Proyecto")
-        print ("4-Salir")
-        try:
-            op=int(input("Elija una opcion: "))
-            
-            if op == 1:
-                mostrar_equipo()
-            elif op == 2:
-                mostrar_proyecto()
-            elif op == 4:
-                repetir=False
-            elif op == 5:
-                juego()
-            else:
-                print("Opcion invalida")
-            input()
-        except TypeError:
-            print("Error, debe usar un numero")
-            print(TypeError)
-            input()
-            
+        if op == 0:
+            print("\033[16;60H\033[104m  Juego    \033[0m")
+            print("\033[17;60H  Equipo   ")
+            print("\033[18;60H Proyecto  ")
+            print("\033[19;60H  Salir    ")
+        elif op == 1:
+            print("\033[16;60H  Juego    ")
+            print("\033[17;60H\033[104m  Equipo   \033[0m")
+            print("\033[18;60H Proyecto  ")
+            print("\033[19;60H  Salir    ")
+        elif op == 2:
+            print("\033[16;60H  Juego    ")
+            print("\033[17;60H  Equipo   ")
+            print("\033[18;60H\033[104m Proyecto  \033[0m")
+            print("\033[19;60H  Salir    ")
+        elif op == 3:
+            print("\033[16;60H  Juego    ")
+            print("\033[17;60H  Equipo   ")
+            print("\033[18;60H Proyecto  ")
+            print("\033[19;60H\033[104m  Salir    \033[0m")
+        if keyboard.is_pressed('w'):
+            if presionado == False:
+                if op-1 != -1:
+                    op-=1
+            presionado = True
+        elif keyboard.is_pressed('s'):
+            if presionado == False:
+                if op+1 != 4:
+                    op += 1
+            presionado = True
+        elif keyboard.is_pressed('e'):
+            if presionado == False:
+                if op == 0:
+                    repetir = False
+                    juego()
+                elif op == 1:
+                    repetir = False
+                    mostrar_equipo()
+                elif op == 2:
+                    repetir = False
+                    mostrar_proyecto()
+                elif op == 3:
+                    repetir = False
+            presionado = True
+        else:
+            presionado = False
 def dibujar(tablero):
     for fila in tablero:
         for columna in fila:
