@@ -14,6 +14,17 @@
     "qwert": {
         "contrasena": "qwert",
         "puntaje": 2
+    },
+    "1234567": {
+        "contrasena": "1234567",
+        "puntaje": 0
+    },
+    "123124": {
+        "contrasena": "214561",
+        "puntaje": 0
+    },
+    "1231241251": {
+        "contrasena": "12312412412",
+        "puntaje": 0
     }
 }
-

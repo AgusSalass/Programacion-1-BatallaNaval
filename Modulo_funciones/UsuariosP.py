@@ -2,16 +2,18 @@ import json
 import os
 import re
 
-try:
-	path_archivo = os.path.dirname(os.path.abspath(__file__))
-	arch_div = os.path.join(path_archivo, f"Usuarios.json")
-	contenido = open(arch_div,"r")
-	cont_existente = contenido.read()
-	contenido.close()
-	usuarios = json.loads(cont_existente)
-except TypeError:
-	print(TypeError)
-	print("Error de lectura:")
+def leer_archivo():
+	try:
+		path_archivo = os.path.dirname(os.path.abspath(__file__))
+		arch_dic = os.path.join(path_archivo, f"Usuarios.json")
+		contenido = open(arch_dic,"r")
+		cont_existente = contenido.read()
+		contenido.close()
+		diccionario_usuarios = json.loads(cont_existente)
+		return diccionario_usuarios
+	except TypeError:
+		print(TypeError)
+		print("Error de lectura")
 
 def sign_up(usuario, diccionario_usuarios):
 	if usuario in diccionario_usuarios:
@@ -37,7 +39,9 @@ def sign_up(usuario, diccionario_usuarios):
 	usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
 
 	try:
-		contenido = open(arch_div, "w")
+		path_archivo = os.path.dirname(os.path.abspath(__file__))
+		arch_dic = os.path.join(path_archivo, f"Usuarios.json")
+		contenido = open(arch_dic, "w")
 		contenido.write(usuarios_JSON)
 		contenido.close()
 		print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
@@ -78,8 +82,10 @@ while repetir:
 			os.system("cls")
 			print("Nombre de usuario invalido")
 			nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+		usuarios = leer_archivo()
 		sign_up(nuevo_usuario, usuarios)
 
 	elif op == 7:
 		nuevo_usuario = str(input("Ingrese su nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+		usuarios = leer_archivo()
 		log_in(nuevo_usuario, usuarios)
