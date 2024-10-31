@@ -5,6 +5,74 @@ import copy
 import cursor
 import json
 import sys
+import re
+
+def leer_archivo():
+	try:
+		path_archivo = os.path.dirname(os.path.abspath(__file__))
+		arch_dic = os.path.join(path_archivo, f"Usuarios.json")
+		contenido = open(arch_dic,"r")
+		cont_existente = contenido.read()
+		contenido.close()
+		diccionario_usuarios = json.loads(cont_existente)
+		return diccionario_usuarios
+	except TypeError:
+		print(TypeError)
+		print("Error de lectura")
+
+def log_in(usuario, diccionario_usuarios):
+	bucle = True
+	if usuario in diccionario_usuarios:
+		contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
+		if contrasena == "-1":
+			bucle = -1
+		while contrasena != diccionario_usuarios[usuario]["contrasena"] and bucle != -1:
+			os.system("cls")
+			print("Contrasena incorrecta")
+			contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
+			if contrasena == "-1":
+				bucle = -1
+		if contrasena != "-1":
+			print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
+			input()
+	else:
+		print("Nombre de usuario no existente. Presione 'Enter' para continuar: ")
+		input()
+
+def sign_up(usuario, diccionario_usuarios):
+	if usuario in diccionario_usuarios:
+		while usuario in diccionario_usuarios:
+			os.system("cls")
+			print("Nombre de usuario ya existente")
+			usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+			while not re.match("^[a-zA-Z0-9]{5,12}$", usuario):
+				os.system("cls")
+				print("Nombre de usuario invalido")
+				usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+	
+	contrasena = str(input("Ingrese una contraseña (5-12 Caracteres, solo letras y numeros): "))
+	while not re.match("^[a-zA-Z0-9]{5,12}$", contrasena):
+		os.system("cls")
+		print("Contraseña invalida")
+		contrasena = str(input("Ingrese una contraseña (5-12 Caracteres, solo letras y numeros): "))
+
+	diccionario_usuarios[usuario] = {
+		"contrasena": contrasena,
+		"puntaje": 0
+	}
+	usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+	try:
+		path_archivo = os.path.dirname(os.path.abspath(__file__))
+		arch_dic = os.path.join(path_archivo, f"Usuarios.json")
+		contenido = open(arch_dic, "w")
+		contenido.write(usuarios_JSON)
+		contenido.close()
+		print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
+		input()
+	except TypeError:
+		print(TypeError)
+		print("Error de grabado")
+
 
 def mostrar_equipo():
     os.system("cls")
@@ -49,25 +117,47 @@ def menu():
         clock.tick(24)
         os.system("cls")
         if op == 0:
-            print("\033[16;60H\033[104m  Juego    \033[0m")
-            print("\033[17;60H  Equipo   ")
-            print("\033[18;60H Proyecto  ")
-            print("\033[19;60H  Salir    ")
+            print("\033[16;60H\033[104m     Juego     \033[0m")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H     Salir     ")
         elif op == 1:
-            print("\033[16;60H  Juego    ")
-            print("\033[17;60H\033[104m  Equipo   \033[0m")
-            print("\033[18;60H Proyecto  ")
-            print("\033[19;60H  Salir    ")
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H\033[104m Iniciar Sesión \033[0m")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H     Salir     ")
         elif op == 2:
-            print("\033[16;60H  Juego    ")
-            print("\033[17;60H  Equipo   ")
-            print("\033[18;60H\033[104m Proyecto  \033[0m")
-            print("\033[19;60H  Salir    ")
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H\033[104m  Registrarse  \033[0m")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H     Salir     ")
         elif op == 3:
-            print("\033[16;60H  Juego    ")
-            print("\033[17;60H  Equipo   ")
-            print("\033[18;60H Proyecto  ")
-            print("\033[19;60H\033[104m  Salir    \033[0m")
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H\033[104m     Equipo     \033[0m")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H     Salir     ")
+        elif op == 4:
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H\033[104m    Proyecto    \033[0m")
+            print("\033[21;60H     Salir     ")
+        elif op == 5:
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H\033[104m     Salir     \033[0m")
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if op-1 != -1:
@@ -75,7 +165,7 @@ def menu():
             presionado = True
         elif keyboard.is_pressed('s'):
             if presionado == False:
-                if op+1 != 4:
+                if op+1 != 6:
                     op += 1
             presionado = True
         elif keyboard.is_pressed('e'):
@@ -84,12 +174,28 @@ def menu():
                     repetir = False
                     juego()
                 elif op == 1:
+                    os.system("cls")
+                    input("Presione 'Enter' para continuar: ")
+                    nuevo_usuario = str(input("Ingrese su nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+                    usuarios = leer_archivo()
+                    log_in(nuevo_usuario, usuarios)    
+                elif op == 2:
+                    os.system("cls")
+                    input("Presione 'Enter' para continuar: ")
+                    nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+                    while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario):
+                        os.system("cls")
+                        print("Nombre de usuario invalido")
+                        nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
+                    usuarios = leer_archivo()
+                    sign_up(nuevo_usuario, usuarios)
+                elif op == 3:
                     repetir = False
                     mostrar_equipo()
-                elif op == 2:
+                elif op == 4:
                     repetir = False
                     mostrar_proyecto()
-                elif op == 3:
+                elif op == 5:
                     repetir = False
             presionado = True
         else:
