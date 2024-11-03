@@ -434,13 +434,15 @@ def juego():
     game = True
     estado = "posicionar barcos"
     confirmado = True
+    presionado = True
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "jugador 2": {"tablero disparos": j2_tablerodisparos,
                 "tablero barcos": j2_tablerobarcos}, "turno": turno}
     #TODO chequear en vez de mandar todos los tableros se manda nada mas el tiro y el turno
     while game == True:
         if num_barco <=4 and barcosj1[num_barco] == []:
             barcosj1[num_barco] = todos_barcos[num_barco]
-        elif num_barco == 5:
+        elif num_barco == 5 and miturno == 1:
+
             estado = "posicionar disparos"
         """
         
@@ -455,6 +457,12 @@ def juego():
                         movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
                     elif estado == "posicionar disparos":
                         pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)
                 presionado = True
             elif keyboard.is_pressed('s'):
                 if presionado == False:
@@ -462,6 +470,12 @@ def juego():
                         movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
                     elif estado == "posicionar disparos":
                         pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)
                 presionado = True
             elif keyboard.is_pressed('d'):
                 if presionado == False:
@@ -469,6 +483,12 @@ def juego():
                         movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
                     elif estado == "posicionar disparos":
                         pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)
                 presionado = True
             elif keyboard.is_pressed('a'):
                 if presionado == False:
@@ -476,6 +496,12 @@ def juego():
                         movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
                     elif estado == "posicionar disparos":
                         pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)
                 presionado = True
             elif keyboard.is_pressed('r'):
                 if presionado == False:
@@ -484,6 +510,12 @@ def juego():
                             rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
                         else:
                             rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)#TODO cuando se pone la direccion con el diccionario se rompe
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)    
                 presionado = True
             elif keyboard.is_pressed('e'):
                 if presionado == False:
@@ -510,19 +542,25 @@ def juego():
                                 print(TypeError)
                                 print("error de grabado de cambios")
                             pos_bomba = (1,1)
+                    os.system("cls")
+                    visualizar_barco(barcosj1,j1_tablerobarcos)
+                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+                    dibujar(j1_tablerodisparos)
+                    dibujar(j1_tablerobarcos)
+                    print(tirosj1)
                 presionado = True
             else:
                 presionado = False
         else:
             print("Esperando oponente...")
         sys.stdin.flush()
-        visualizar_barco(barcosj1,j1_tablerobarcos)
-        visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
-        dibujar(j1_tablerodisparos)
-        dibujar(j1_tablerobarcos)
-        print(tirosj1)
+        # os.system("cls")
+        # visualizar_barco(barcosj1,j1_tablerobarcos)
+        # visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+        # dibujar(j1_tablerodisparos)
+        # dibujar(j1_tablerobarcos)
+        # print(tirosj1)
         clock.tick(24)
-        os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas","McLovin"]
 #menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir
