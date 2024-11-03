@@ -213,9 +213,9 @@ def convertir_a_numero(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
             if  "≡" in tablero[i][j]:
-                str(tablero[i][j]).replace("≡", "1")
+                tablero[i][j] = "1"
             elif "¤" in tablero[i][j]:
-                str(tablero[i][j]).replace("¤", "2")
+                tablero[i][j] = "2"
 
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
@@ -284,7 +284,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
 
-def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
+def confirmar_barco(barcos,barco,partido,arch_tablero):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
@@ -313,7 +313,21 @@ def visualizar_disparos(disparo,tablero_disparos,bombas):
     for coordenada in bombas:
         tablero_disparos[coordenada[0]][coordenada[1]] = "\033[31m ¤\033[0m"
     tablero_disparos[disparo[0]][disparo[1]] = "\033[37m ¤\033[0m"
-
+def dibujar_radar(i):
+    o = (f"\033[32m ▓\033[0m") #main
+    p = (f"\033[32m ░\033[0m") #estela 1
+    l= (f"\033[32m ▒\033[0m")  #estela 2
+    m = (f"\033[32m ~\033[0m") #guiones
+    radar0=f"   {m}{p}{m}  \n {m}{m}{l}{l}{m} \n {m}{m}{o}{o}{o} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
+    radar1=f"   {m}{m}{m}  \n {m}{m}{p}{p}{m} \n {m}{m}{o}{l}{l} \n {m}{m}{m}{o}{m} \n   {m}{m}{m}"
+    radar2=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{p}{p} \n {m}{m}{o}{l}{m} \n   {m}{o}{m}"
+    radar3=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{m}{m} \n {m}{o}{l}{p}{m} \n   {m}{l}{m}"
+    radar4=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {o}{o}{o}{m}{m} \n {m}{l}{p}{m}{m} \n   {m}{p}{m}"
+    radar5=f"   {m}{m}{m}  \n {m}{o}{m}{m}{m} \n {l}{l}{o}{m}{m} \n {m}{p}{m}{m}{m} \n   {m}{m}{m}"
+    radar6=f"   {m}{o}{m}  \n {m}{l}{o}{m}{m} \n {p}{p}{o}{m}{m} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
+    radar7=f"   {m}{l}{m}  \n {m}{p}{l}{o}{m} \n {m}{m}{o}{m}{m} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
+    radar = [radar0,radar1,radar2,radar3,radar4,radar5,radar6,radar7]
+    print(radar[i])
 def movimiento_disparo(direccion,bomba,tablero):
     posible = True
     if posible:
@@ -429,6 +443,7 @@ def juego():
     tirosj1 = []
     tirosj2 = []
     pos_bomba = (1,1)
+    radar = 0
     turno = 1
     miturno = 1
     game = True
@@ -442,12 +457,6 @@ def juego():
             barcosj1[num_barco] = todos_barcos[num_barco]
         elif num_barco == 5:
             estado = "posicionar disparos"
-        """
-        
-        Esta sección toma los inputs del teclado, en caso de querer agregar una nueva tecla, se añade otro
-        elif con la tecla deseada, y se usa el mismo formato con la bandera "presionado"
-        
-        """
         if turno == miturno:
             if keyboard.is_pressed('w'):
                 if presionado == False:
@@ -522,6 +531,10 @@ def juego():
         dibujar(j1_tablerobarcos)
         print(tirosj1)
         clock.tick(24)
+        dibujar_radar(int(radar))
+        radar +=0.1
+        if radar >= 8:
+            radar = 0
         os.system("cls")
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas","McLovin"]
