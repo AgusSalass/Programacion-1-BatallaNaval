@@ -1,10 +1,11 @@
 import socket
+import json
 
 # Create a socket object
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('192.168.0.101', 8080)
+server_address = ('192.168.191.52', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
@@ -18,15 +19,15 @@ while True:
     # Accept an incoming connection
     connection, address = server_socket.accept()
     print(f"Connected by {address}")
-
+    tengopartida = False
     # Handle the connection (e.g., send/receive data)
     conexion = True
     while conexion:
-        data = connection.recv(1024)
-        if not data:
-            conexion = False
-        print(f"Received: {data.decode()}")
-        connection.sendall(data)
-
-    # Close the connection
-    connection.close()
+        data = connection.recv(64000).decode('utf-8')
+        #if not data:
+         #   conexion = False
+        if data:
+            partida = json.loads(data)
+            print(f"Received: {data}")
+            connection.sendall("listo".encode('utf-8'))
+    print("cerre")
