@@ -213,9 +213,9 @@ def convertir_a_numero(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
             if  "≡" in tablero[i][j]:
-                str(tablero[i][j]).replace("≡", "1")
+                tablero[i][j] = "1"
             elif "¤" in tablero[i][j]:
-                str(tablero[i][j]).replace("¤", "2")
+                tablero[i][j] = "2"
 
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
