@@ -1,0 +1,34 @@
+Nuestro proyecto trata sobre el juego de mesa “Batalla Naval” clásico./n
+/n
+Elementos:/n
+2 tableros para cada jugador, uno donde se despliegan los barcos y otro donde se realizan los disparos./n
+5 barcos: /n 
+        1 portaaviones (5 caracteres de largo)/n
+        1 destructor (4 caracteres)/n
+        2 cruceros (3 caracteres cada uno)/n
+        1 lancha (2 caracteres)/n
+/n
+Cantidad de jugadores: 2/n
+/n
+Preparación:/n
+Cada jugador coloca todos sus barcos de manera horizontal y vertical en su tablero de despliegue/n sin superponerlos entre sí./n
+El movimiento de los barcos se realiza con las teclas "a" (izquierda), "w" (arriba), "d" (derecha), "s" (abajo)./n
+Para cambiar la disposición de barco de horizontal a vertical y visceversa con la tecla "r"./n
+Una vez ya elegido la posición definitiva se presiona "enter" y se continua con el siguiente barco./n
+/n
+Inicio del juego:/n
+Por un sistema de turnos, el jugador 1 decide dónde realizar su primer disparo en el tablero de disparo,/n siguiendo la misma lógica de movimiento que con los barcos./n
+Al realizar el disparo se indica si le ha dado a un barco del oponente o le pegó al agua, /n y el turno pasa al jugador 2, actualizándolo sobre la ubicación del disparo./n
+Ahora es el turno de efectuar un disparo del jugador 2. Este método se repite a lo largo de todo el juego./n
+/n
+¿Cómo se gana?/n
+Se alcanza la victoria quien destruye todos los barcos del oponente primero./n La destrucción de un barco se efectúa cuando se le disparó a todo su largo./n
+/n
+¿Qué pasa una vez que se gana?/n
+Si el jugador vencedor entra en el top 10 de puntajes, se le solicita un alias de tres letras para que quede guardado./n
+Si no, aparece la opción de jugar una revancha o salir del juego. /n 
+Al final de una partida, ambos jugadores pueden decidir si quieren jugar una revancha./n
+
+with open('nombre_del_archivo.txt', 'r') as archivo:
+    contenido = archivo.read()
+    print(contenido)
