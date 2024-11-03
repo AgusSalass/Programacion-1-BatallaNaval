@@ -2,10 +2,11 @@ Nuestro proyecto trata sobre el juego de mesa “Batalla Naval” clásico./n
 /n
 Elementos:/n
 2 tableros para cada jugador, uno donde se despliegan los barcos y otro donde se realizan los disparos./n
-5 barcos: 1 portaaviones (5 caracteres de largo)/n
-          1 destructor (4 caracteres)/n
-          2 cruceros (3 caracteres cada uno)/n
-          1 lancha (2 caracteres)/n
+5 barcos: /n 
+        1 portaaviones (5 caracteres de largo)/n
+        1 destructor (4 caracteres)/n
+        2 cruceros (3 caracteres cada uno)/n
+        1 lancha (2 caracteres)/n
 /n
 Cantidad de jugadores: 2/n
 /n
@@ -27,3 +28,7 @@ Se alcanza la victoria quien destruye todos los barcos del oponente primero./n L
 Si el jugador vencedor entra en el top 10 de puntajes, se le solicita un alias de tres letras para que quede guardado./n
 Si no, aparece la opción de jugar una revancha o salir del juego. /n 
 Al final de una partida, ambos jugadores pueden decidir si quieren jugar una revancha./n
+
+with open('nombre_del_archivo.txt', 'r') as archivo:
+    contenido = archivo.read()
+    print(contenido)

@@ -284,7 +284,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
 
-def confirmar_barco(barcos,barco,partido,arch_tablero):
+def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
