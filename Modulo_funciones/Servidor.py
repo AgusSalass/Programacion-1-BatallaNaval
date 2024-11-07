@@ -5,7 +5,7 @@ import json
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('localhost', 8080)
+server_address = ('192.168.104.1', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
@@ -29,5 +29,7 @@ while True:
         if data:
             partida = json.loads(data)
             print(f"Received: {data}")
-            connection.sendall("listo".encode('utf-8'))
+            print(partida["turno"])
+            data = json.dumps(partida)
+            connection.sendall(data.encode('utf-8'))
     print("cerre")

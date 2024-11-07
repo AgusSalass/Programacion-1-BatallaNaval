@@ -244,6 +244,14 @@ def convertir_a_numero(tablero):
             elif "¤" in tablero[i][j]:
                 tablero[i][j] = "2"
 
+def convertir_a_caracteres(tablero):
+    for i in range(len(tablero)):
+        for j in range(len(tablero[i])):
+            if  "1" in tablero[i][j]:
+                tablero[i][j] = "\033[90m ≡\033[0m"
+            elif "2" in tablero[i][j]:
+                tablero[i][j] = "\033[31m ¤\033[0m"
+
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
     arch_div = os.path.join(path, f"Usuarios.json")
@@ -333,6 +341,8 @@ def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
         except TypeError:
             print(TypeError)
             print("error de grabado de cambios")
+        convertir_a_caracteres(tablero_disparo)
+        convertir_a_caracteres(tablero)
     return barco
 
 def visualizar_disparos(disparo,tablero_disparos,bombas_dadas,bombas_falladas):
@@ -427,7 +437,7 @@ def esperar_conex():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Define the server address and port
-    server_address = ('localhost', 8080)
+    server_address = ('192.168.104.1', 8080)
 
     # Connect to the server
     client_socket.connect(server_address)
@@ -437,6 +447,10 @@ def esperar_conex():
 
 def  enviar_mensaje(client_socket, mensaje):
     # Send the message to the server
+    if mensaje["turno"] == 1:
+        mensaje["turno"] = 2
+    else:
+        mensaje["turno"] = 1
     data = json.dumps(mensaje)
     
     client_socket.sendall(data.encode('utf-8'))
@@ -546,8 +560,8 @@ def juego():
             enviar_mensaje(conexion, partida)
             estado = "posicionar disparos"
             mensaje = recibir_mensaje(conexion)
-            if mensaje == "listo":
-                salsa = "recibi algo"
+            partida = json.loads(mensaje)
+            turno = partida["turno"]
             actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
         if turno == miturno:
             if keyboard.is_pressed('w'):
@@ -654,7 +668,7 @@ def juego():
             else:
                 presionado = False
         else:
-            print("Esperando oponente...")
+            recibir_mensaje(conexion)
         if int(radar) != radar_aux:
             actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
             radar_aux += 1
