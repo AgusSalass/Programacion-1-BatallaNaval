@@ -5,7 +5,7 @@ import json
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('192.168.191.52', 8080)
+server_address = ('192.168.193.104', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
