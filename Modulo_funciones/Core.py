@@ -7,25 +7,6 @@ import json
 import re
 import socket
 
-
-
-
-
-## Send data to the server
-#client_socket.sendall(b"Hola, usuario")
-#
-## Receive data from the server
-#conexion = True
-#while conexion:
-#    data = client_socket.recv(1024)
-#    if data:
-#        data = client_socket.recv(1024)
-#        print(f"Received: {data}")
-#    
-#
-## Close the connection
-#client_socket.close()
-
 def leer_archivo():
 	try:
 		path_archivo = os.path.dirname(os.path.abspath(__file__))
@@ -391,8 +372,7 @@ def movimiento_disparo(direccion,bomba,tablero):
             bomba = (new_x,new_y)
     return bomba
 
-def confirmar_tiro(posicion_tiro,tiros,confirmable):
-#TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
+def confirmar_tiro(posicion_tiro,tiros,confirmable,tiros_fallados):
     confirmable = True
     if tiros == []:
         return confirmable
@@ -400,9 +380,12 @@ def confirmar_tiro(posicion_tiro,tiros,confirmable):
         for tiro in range(len(tiros)):
             if tiros[tiro] == posicion_tiro:
                 confirmable = False
+        for tiro in range(len(tiros_fallados)):
+            if tiros_fallados[tiro] == posicion_tiro:
+                confirmable = False
         return confirmable
        
-def deteccion_disparo(disparo, lista_barcos,tablero_disparo):
+def deteccion_disparo(disparo, lista_barcos,tablero_disparo,tablero_barcos):
     i = 0
     encontrado = False
     while i < len(lista_barcos) and encontrado == False:
@@ -427,13 +410,24 @@ def actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,t
     print(tirosj1_dados)
     dibujar_radar(int(radar))
     print(salsa)
+
+def disparo(bomba,tiros_dados,confirmado,tiros_fallados,barco,tablerodisparos,tablerobarcos):
+    confirmado = confirmar_tiro(bomba,tiros_dados,confirmado,tiros_fallados)
+    if confirmado:
+        encontrar = deteccion_disparo(bomba,barco,tablerodisparos,tablerobarcos)
+        if encontrar:
+            print("TOCADO!")
+            tiros_dados.append(bomba)
+        elif not encontrar:
+            print("AGUA!")
+            tiros_fallados.append(bomba)
     
 def esperar_conex():
     # Create a socket object
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Define the server address and port
-    server_address = ('192.168.193.104', 8080)
+    server_address = ('localhost', 8080)
 
     # Connect to the server
     client_socket.connect(server_address)
@@ -639,27 +633,23 @@ def juego():
                     if  miturno == 2 and num_barco == 5:
                         j2_listo = True
                     if estado == "posicionar disparos":
-                        confirmado = confirmar_tiro(pos_bomba,tirosj1_dados,confirmado)
-                        if confirmado:
-                            encontrar = deteccion_disparo(pos_bomba, barcosj1,j1_tablerodisparos)
-                            if encontrar:
-                                print("TOCADO!")
-                                tirosj1_dados.append(pos_bomba)
-                            elif not encontrar:
-                                print("AGUA!")
-                                tirosj1_fallados.append(pos_bomba)
-                            convertir_a_numero(j1_tablerobarcos)
-                            convertir_a_numero(j1_tablerodisparos)
-                            tableros = json.dumps(partida)
-                            try:
-                                contenido = open(arch_tab, "w")
-                                contenido.write(tableros)
-                                contenido.close()
-                                print("crado")
-                            except TypeError:
-                                print(TypeError)
-                                print("error de grabado de cambios")
-                            pos_bomba = (1,1)
+                        if miturno == 1:
+                            disparo(pos_bomba,tirosj1_dados,confirmado,tirosj1_fallados,barcosj2,j1_tablerodisparos,j2_tablerobarcos)
+                        if miturno == 2:
+                            disparo(pos_bomba,tirosj2_dados,confirmado,tirosj2_fallados,barcosj1,j2_tablerodisparos,j1_tablerobarcos)
+                        convertir_a_numero(j1_tablerobarcos)
+                        convertir_a_numero(j1_tablerodisparos)
+                        convertir_a_numero(j2_tablerobarcos)
+                        convertir_a_numero(j2_tablerodisparos)
+                        tableros = json.dumps(partida)
+                        try:
+                            contenido = open(arch_tab, "w")
+                            contenido.write(tableros)
+                            contenido.close()
+                        except TypeError:
+                            print(TypeError)
+                            print("error de grabado de cambios")
+                        pos_bomba = (1,1)
                 presionado = True
             else:
                 presionado = False
