@@ -104,6 +104,15 @@ def mostrar_proyecto():
     os.system("cls")
     print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
 
+def mostrar_instrucciones():
+    os.system("cls")
+    path_instrucciones = os.path.dirname(os.path.abspath(__file__))
+    archivo_dic = os.path.join(path_instrucciones, f"Instrucciones.txt")
+    instrucciones = open(archivo_dic,"r", encoding="utf8")
+    instrucc = instrucciones.read()
+    print (instrucc)
+    instrucciones.close()
+
 def menu():
     cursor.hide()
     repetir = True
@@ -141,42 +150,56 @@ def menu():
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 1:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H\033[104m Iniciar Sesión \033[0m")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 2:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H\033[104m  Registrarse  \033[0m")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 3:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H\033[104m     Equipo     \033[0m")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 4:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H\033[104m    Proyecto    \033[0m")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 5:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H\033[104m     Salir     \033[0m")
+            print("\033[21;60H\033[104m Instrucciones \033[0m")
+            print("\033[22;60H     Salir     ")
+        elif op == 6:
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H\033[104m     Salir     \033[0m")
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if op-1 != -1:
@@ -184,7 +207,7 @@ def menu():
             presionado = True
         elif keyboard.is_pressed('s'):
             if presionado == False:
-                if op+1 != 6:
+                if op+1 != 7:
                     op += 1
             presionado = True
         elif keyboard.is_pressed('e'):
@@ -217,6 +240,10 @@ def menu():
                     print()
                     input("Presione 'Enter' para continuar: ")
                 elif op == 5:
+                    mostrar_instrucciones()
+                    print()
+                    input("Presione 'Enter' para continuar: ")
+                elif op == 6:
                     os.system("cls")
                     repetir = False
             presionado = True
