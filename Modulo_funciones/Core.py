@@ -457,7 +457,10 @@ def  enviar_mensaje(client_socket, mensaje):
 
 def recibir_mensaje(client_socket):
     # Receive the message from the server
-    data = client_socket.recv(64000).decode('utf-8')
+    try:
+        data = client_socket.recv(1048576).decode('utf-8')
+    except socket.herror:
+        print(socket.herror)
     return data
 
 def juego():
@@ -558,10 +561,15 @@ def juego():
             barcosj1[num_barco] = todos_barcos[num_barco]
         elif num_barco == 5:
             enviar_mensaje(conexion, partida)
+            print("envie mensaje")
             estado = "posicionar disparos"
-            mensaje = recibir_mensaje(conexion)
-            partida = json.loads(mensaje)
-            turno = partida["turno"]
+            try:
+                mensaje = recibir_mensaje(conexion)
+            except socket.herror:
+                print(socket.herror)
+            if mensaje:
+                partida = json.loads(mensaje)
+                turno = partida["turno"]
             actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
         if turno == miturno:
             if keyboard.is_pressed('w'):
@@ -643,9 +651,9 @@ def juego():
                         if  miturno == 2:
                             num_barco = confirmar_barco(barcosj2,num_barco, partida, arch_tab,j2_tablerobarcos,j2_tablerodisparos)
                     if miturno == 1 and num_barco == 5:
-                        j1_listo = True
+                        partida["j1_listo"] = True
                     if  miturno == 2 and num_barco == 5:
-                        j2_listo = True
+                        partida["j2_listo"] = True
                     if estado == "posicionar disparos":
                         if miturno == 1:
                             disparo(pos_bomba,tirosj1_dados,confirmado,tirosj1_fallados,barcosj2,j1_tablerodisparos,j2_tablerobarcos)
@@ -668,7 +676,10 @@ def juego():
             else:
                 presionado = False
         else:
-            recibir_mensaje(conexion)
+            mensaje = recibir_mensaje(conexion)
+            if mensaje:
+                partida = json.loads(mensaje)
+                turno = partida["turno"]
         if int(radar) != radar_aux:
             actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
             radar_aux += 1
