@@ -457,7 +457,10 @@ def  enviar_mensaje(client_socket, mensaje):
 
 def recibir_mensaje(client_socket):
     # Receive the message from the server
-    data = client_socket.recv(1048576).decode('utf-8')
+    try:
+        data = client_socket.recv(1048576).decode('utf-8')
+    except socket.herror:
+        print(socket.herror)
     return data
 
 def juego():
@@ -505,7 +508,7 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
-    j2_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
+    j2_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -516,7 +519,7 @@ def juego():
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
+                         ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
     j2_tablerobarcos   = [["╠","══","══","══","══","══","══","══","══","══","══","═╣"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -528,7 +531,7 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
+                          ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
     #TODO hacer un radar al costado del tablero
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
@@ -541,7 +544,7 @@ def juego():
     pos_bomba = (1,1)
     radar = 0
     turno = 1
-    miturno = 2
+    miturno = 1
     game = True
     estado = "posicionar barcos"
     confirmado = True
@@ -552,19 +555,22 @@ def juego():
     salsa = "no recibi nada"
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "jugador 2": {"tablero disparos": j2_tablerodisparos,
                 "tablero barcos": j2_tablerobarcos}, "turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}
-    actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
+    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
     while game == True:
-        if num_barco <=4 and barcosj2[num_barco] == []:
-            barcosj2[num_barco] = todos_barcos[num_barco]
+        if num_barco <=4 and barcosj1[num_barco] == []:
+            barcosj1[num_barco] = todos_barcos[num_barco]
         elif num_barco == 5:
             enviar_mensaje(conexion, partida)
+            print("envie mensaje")
             estado = "posicionar disparos"
-            mensaje = recibir_mensaje(conexion)
+            try:
+                mensaje = recibir_mensaje(conexion)
+            except socket.herror:
+                print(socket.herror)
             if mensaje:
                 partida = json.loads(mensaje)
                 turno = partida["turno"]
-                print("Recibí!!!!!!!!")
-            actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
+            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
         if turno == miturno:
             if keyboard.is_pressed('w'):
                 if presionado == False:
@@ -645,9 +651,9 @@ def juego():
                         if  miturno == 2:
                             num_barco = confirmar_barco(barcosj2,num_barco, partida, arch_tab,j2_tablerobarcos,j2_tablerodisparos)
                     if miturno == 1 and num_barco == 5:
-                        partida["j1_listo"] == True
+                        partida["j1_listo"] = True
                     if  miturno == 2 and num_barco == 5:
-                        partida["j2_listo"] == True
+                        partida["j2_listo"] = True
                     if estado == "posicionar disparos":
                         if miturno == 1:
                             disparo(pos_bomba,tirosj1_dados,confirmado,tirosj1_fallados,barcosj2,j1_tablerodisparos,j2_tablerobarcos)
@@ -670,10 +676,8 @@ def juego():
             else:
                 presionado = False
         else:
-            print("Esperando oponente...")
             mensaje = recibir_mensaje(conexion)
             if mensaje:
-                print("Recibí!")
                 partida = json.loads(mensaje)
                 turno = partida["turno"]
         if int(radar) != radar_aux:
