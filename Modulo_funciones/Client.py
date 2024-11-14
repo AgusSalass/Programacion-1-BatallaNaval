@@ -15,9 +15,13 @@ print("Connected to the server.")
 client_socket.sendall(b"Hola, usuario")
 
 # Receive data from the server
-
-data = client_socket.recv(1024)
-print(f"Received: {data.decode()}")
+conexion = True
+while conexion:
+    data = client_socket.recv(1024)
+    if data:
+        data = client_socket.recv(1024)
+        print(f"Received: {data}")
+    
 
 # Close the connection
 client_socket.close()

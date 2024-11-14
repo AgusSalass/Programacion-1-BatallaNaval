@@ -4,8 +4,8 @@ import keyboard
 import copy
 import cursor
 import json
-import sys
 import re
+import socket
 
 def leer_archivo():
 	try:
@@ -85,6 +85,15 @@ def mostrar_proyecto():
     os.system("cls")
     print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
 
+def mostrar_instrucciones():
+    os.system("cls")
+    path_instrucciones = os.path.dirname(os.path.abspath(__file__))
+    archivo_dic = os.path.join(path_instrucciones, f"Instrucciones.txt")
+    instrucciones = open(archivo_dic,"r", encoding="utf8")
+    instrucc = instrucciones.read()
+    print (instrucc)
+    instrucciones.close()
+
 def menu():
     cursor.hide()
     repetir = True
@@ -122,42 +131,56 @@ def menu():
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 1:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H\033[104m Iniciar Sesión \033[0m")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 2:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H\033[104m  Registrarse  \033[0m")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 3:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H\033[104m     Equipo     \033[0m")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 4:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H\033[104m    Proyecto    \033[0m")
-            print("\033[21;60H     Salir     ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H     Salir     ")
         elif op == 5:
             print("\033[16;60H     Juego     ")
             print("\033[17;60H Iniciar Sesión ")
             print("\033[18;60H  Registrarse  ")
             print("\033[19;60H     Equipo     ")
             print("\033[20;60H    Proyecto    ")
-            print("\033[21;60H\033[104m     Salir     \033[0m")
+            print("\033[21;60H\033[104m Instrucciones \033[0m")
+            print("\033[22;60H     Salir     ")
+        elif op == 6:
+            print("\033[16;60H     Juego     ")
+            print("\033[17;60H Iniciar Sesión ")
+            print("\033[18;60H  Registrarse  ")
+            print("\033[19;60H     Equipo     ")
+            print("\033[20;60H    Proyecto    ")
+            print("\033[21;60H Instrucciones ")
+            print("\033[22;60H\033[104m     Salir     \033[0m")
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if op-1 != -1:
@@ -165,7 +188,7 @@ def menu():
             presionado = True
         elif keyboard.is_pressed('s'):
             if presionado == False:
-                if op+1 != 6:
+                if op+1 != 7:
                     op += 1
             presionado = True
         elif keyboard.is_pressed('e'):
@@ -198,6 +221,10 @@ def menu():
                     print()
                     input("Presione 'Enter' para continuar: ")
                 elif op == 5:
+                    mostrar_instrucciones()
+                    print()
+                    input("Presione 'Enter' para continuar: ")
+                elif op == 6:
                     os.system("cls")
                     repetir = False
             presionado = True
@@ -216,6 +243,14 @@ def convertir_a_numero(tablero):
                 tablero[i][j] = "1"
             elif "¤" in tablero[i][j]:
                 tablero[i][j] = "2"
+
+def convertir_a_caracteres(tablero):
+    for i in range(len(tablero)):
+        for j in range(len(tablero[i])):
+            if  "1" in tablero[i][j]:
+                tablero[i][j] = "\033[90m ≡\033[0m"
+            elif "2" in tablero[i][j]:
+                tablero[i][j] = "\033[31m ¤\033[0m"
 
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
@@ -298,7 +333,7 @@ def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
     if barco == 5:
         convertir_a_numero(tablero_disparo)
         convertir_a_numero(tablero)
-        tableros = json.dumps(partido, indent=4)
+        tableros = json.dumps(partido)
         try:
             contenido = open(arch_tablero, "w")
             contenido.write(tableros)
@@ -306,11 +341,15 @@ def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
         except TypeError:
             print(TypeError)
             print("error de grabado de cambios")
+        convertir_a_caracteres(tablero_disparo)
+        convertir_a_caracteres(tablero)
     return barco
 
-def visualizar_disparos(disparo,tablero_disparos,bombas):
-    for coordenada in bombas:
+def visualizar_disparos(disparo,tablero_disparos,bombas_dadas,bombas_falladas):
+    for coordenada in bombas_dadas:
         tablero_disparos[coordenada[0]][coordenada[1]] = "\033[31m ¤\033[0m"
+    for coordenada in bombas_falladas:
+        tablero_disparos[coordenada[0]][coordenada[1]] = "\033[97m ░\033[0m"
     tablero_disparos[disparo[0]][disparo[1]] = "\033[37m ¤\033[0m"
 
 def dibujar_radar(i):
@@ -328,6 +367,7 @@ def dibujar_radar(i):
     radar7=f"   {m}{l}{m}  \n {m}{p}{l}{o}{m} \n {m}{m}{o}{m}{m} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
     radar = [radar0,radar1,radar2,radar3,radar4,radar5,radar6,radar7]
     print(radar[i])
+
 def movimiento_disparo(direccion,bomba,tablero):
     posible = True
     if posible:
@@ -342,8 +382,7 @@ def movimiento_disparo(direccion,bomba,tablero):
             bomba = (new_x,new_y)
     return bomba
 
-def confirmar_tiro(posicion_tiro,tiros,confirmable):
-#TODO el primer parámetro tiene que ser el nombre que le demos a la posición actual del disparo
+def confirmar_tiro(posicion_tiro,tiros,confirmable,tiros_fallados):
     confirmable = True
     if tiros == []:
         return confirmable
@@ -351,9 +390,12 @@ def confirmar_tiro(posicion_tiro,tiros,confirmable):
         for tiro in range(len(tiros)):
             if tiros[tiro] == posicion_tiro:
                 confirmable = False
+        for tiro in range(len(tiros_fallados)):
+            if tiros_fallados[tiro] == posicion_tiro:
+                confirmable = False
         return confirmable
        
-def deteccion_disparo(disparo, lista_barcos):
+def deteccion_disparo(disparo, lista_barcos,tablero_disparo,tablero_barcos):
     i = 0
     encontrado = False
     while i < len(lista_barcos) and encontrado == False:
@@ -361,21 +403,65 @@ def deteccion_disparo(disparo, lista_barcos):
         while j < len(lista_barcos[i]) and encontrado == False:
             if disparo == lista_barcos[i][j] and encontrado == False:
                 del lista_barcos[i][j]
+                tablero_disparo[disparo[0]][disparo[1]] = "\033[31m ¤\033[0m"
                 encontrado = True
             j += 1
         i += 1
+    if not encontrado:
+        tablero_disparo[disparo[0]][disparo[1]] = "\033[90m ░\033[0m"
     return encontrado
 
-def actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar):
+def actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa):
     os.system("cls")
     visualizar_barco(barcosj1,j1_tablerobarcos)
-    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
+    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1_dados,tirosj1_fallados)
     dibujar(j1_tablerodisparos)
     dibujar(j1_tablerobarcos)
-    print(tirosj1)
+    print(tirosj1_dados)
     dibujar_radar(int(radar))
+    print(salsa)
+
+def disparo(bomba,tiros_dados,confirmado,tiros_fallados,barco,tablerodisparos,tablerobarcos):
+    confirmado = confirmar_tiro(bomba,tiros_dados,confirmado,tiros_fallados)
+    if confirmado:
+        encontrar = deteccion_disparo(bomba,barco,tablerodisparos,tablerobarcos)
+        if encontrar:
+            print("TOCADO!")
+            tiros_dados.append(bomba)
+        elif not encontrar:
+            print("AGUA!")
+            tiros_fallados.append(bomba)
+    
+def esperar_conex():
+    # Create a socket object
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Define the server address and port
+    server_address = ('192.168.104.1', 8080)
+
+    # Connect to the server
+    client_socket.connect(server_address)
+    print("Connected to the server.")
+    
+    return client_socket
+
+def  enviar_mensaje(client_socket, mensaje):
+    # Send the message to the server
+    if mensaje["turno"] == 1:
+        mensaje["turno"] = 2
+    else:
+        mensaje["turno"] = 1
+    data = json.dumps(mensaje)
+    
+    client_socket.sendall(data.encode('utf-8'))
+
+def recibir_mensaje(client_socket):
+    # Receive the message from the server
+    data = client_socket.recv(1048576).decode('utf-8')
+    return data
 
 def juego():
+    conexion = esperar_conex()
     cursor.hide()
     pygame.init()
     clock = pygame.time.Clock()
@@ -419,7 +505,7 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
-    j2_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
+    j2_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -430,7 +516,7 @@ def juego():
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
+                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
     j2_tablerobarcos   = [["╠","══","══","══","══","══","══","══","══","══","══","═╣"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -442,18 +528,20 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
+                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
     #TODO hacer un radar al costado del tablero
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
     barcosj2 = [[], [], [], [], []]
-    tirosj1 = []
-    tirosj2 = []
+    tirosj1_dados = []
+    tirosj1_fallados = []
+    tirosj2_dados = []
+    tirosj2_fallados = []
     pos_bomba = (1,1)
     radar = 0
     turno = 1
-    miturno = 1
+    miturno = 2
     game = True
     estado = "posicionar barcos"
     confirmado = True
@@ -461,100 +549,135 @@ def juego():
     j1_listo = False
     j2_listo = False
     radar_aux = 0
+    salsa = "no recibi nada"
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "jugador 2": {"tablero disparos": j2_tablerodisparos,
                 "tablero barcos": j2_tablerobarcos}, "turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}
-    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+    actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
     while game == True:
-        if num_barco <=4 and barcosj1[num_barco] == []:
-            barcosj1[num_barco] = todos_barcos[num_barco]
-        elif num_barco == 5 and miturno == 1:
-
+        if num_barco <=4 and barcosj2[num_barco] == []:
+            barcosj2[num_barco] = todos_barcos[num_barco]
+        elif num_barco == 5:
+            enviar_mensaje(conexion, partida)
             estado = "posicionar disparos"
-            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+            mensaje = recibir_mensaje(conexion)
+            if mensaje:
+                partida = json.loads(mensaje)
+                turno = partida["turno"]
+                print("Recibí!!!!!!!!")
+            actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
         if turno == miturno:
             if keyboard.is_pressed('w'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
+                        if miturno == 1:
+                            movimiento_barco((-1,0),barcosj1,num_barco,j1_tablerobarcos)
+                        elif miturno == 2:
+                            movimiento_barco((-1,0),barcosj2,num_barco,j2_tablerobarcos)
                     elif estado == "posicionar disparos":
-                        pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+                        if miturno == 1:
+                            pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
+                        if  miturno == 2:
+                            pos_bomba = movimiento_disparo((-1,0),pos_bomba,j2_tablerodisparos)
+                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('s'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
+                        if miturno == 1:
+                            movimiento_barco((1,0),barcosj1,num_barco,j1_tablerobarcos)
+                        elif miturno == 2:
+                            movimiento_barco((1,0),barcosj2,num_barco,j2_tablerobarcos)
                     elif estado == "posicionar disparos":
-                        pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+                        if miturno == 1:
+                            pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
+                        if  miturno == 2:
+                            pos_bomba = movimiento_disparo((1,0),pos_bomba,j2_tablerodisparos)
+                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('d'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
+                        if miturno == 1:
+                            movimiento_barco((0,1),barcosj1,num_barco,j1_tablerobarcos)
+                        elif miturno == 2:
+                            movimiento_barco((0,1),barcosj2,num_barco,j2_tablerobarcos)
                     elif estado == "posicionar disparos":
-                        pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+                        if miturno == 1:
+                            pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
+                        if  miturno == 2:
+                            pos_bomba = movimiento_disparo((0,1),pos_bomba,j2_tablerodisparos)
+                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('a'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
+                        if miturno == 1:
+                            movimiento_barco((0,-1),barcosj1,num_barco,j1_tablerobarcos)
+                        elif miturno == 2:
+                            movimiento_barco((0,-1),barcosj2,num_barco,j2_tablerobarcos)
                     elif estado == "posicionar disparos":
-                        pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+                        if miturno == 1:
+                            pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
+                        if  miturno == 2:
+                            pos_bomba = movimiento_disparo((0,-1),pos_bomba,j2_tablerodisparos)
+                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('r'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        if barcosj1[num_barco][0][0]==barcosj1[num_barco][1][0]:
-                            rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
-                        else:
-                            rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+                        if miturno == 1:
+                            if barcosj1[num_barco][0][0]==barcosj1[num_barco][1][0]:
+                                rotacion_a_vertical(barcosj1,num_barco,j1_tablerobarcos)
+                            else:
+                                rotacion_a_horizontal(barcosj1,num_barco,j1_tablerobarcos)
+                        elif  miturno == 2:
+                            if barcosj2[num_barco][0][0]==barcosj2[num_barco][1][0]:
+                                rotacion_a_vertical(barcosj2,num_barco,j2_tablerobarcos)
+                            else:
+                                rotacion_a_horizontal(barcosj2,num_barco,j2_tablerobarcos)
+                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('e'):
                 if presionado == False:
                     if estado == "posicionar barcos":
-                        num_barco = confirmar_barco(barcosj1,num_barco, partida, arch_tab,j1_tablerobarcos,j1_tablerodisparos)
+                        if miturno == 1:
+                            num_barco = confirmar_barco(barcosj1,num_barco, partida, arch_tab,j1_tablerobarcos,j1_tablerodisparos)
+                        if  miturno == 2:
+                            num_barco = confirmar_barco(barcosj2,num_barco, partida, arch_tab,j2_tablerobarcos,j2_tablerodisparos)
                     if miturno == 1 and num_barco == 5:
-                        j1_listo = True
+                        partida["j1_listo"] == True
                     if  miturno == 2 and num_barco == 5:
-                        j2_listo = True
+                        partida["j2_listo"] == True
                     if estado == "posicionar disparos":
-                        confirmado = confirmar_tiro(pos_bomba,tirosj1,confirmado)
-                        if confirmado:
-                            encontrar = deteccion_disparo(pos_bomba, barcosj1)
-                            if encontrar:
-                                print("TOCADO!")
-                            elif not encontrar:
-                                print("AGUA!")
-                            tirosj1.append(pos_bomba)
-                            convertir_a_numero(j1_tablerobarcos)
-                            convertir_a_numero(j1_tablerodisparos)
-                            tableros = json.dumps(partida, indent=4)
-                            try:
-                                contenido = open(arch_tab, "w")
-                                contenido.write(tableros)
-                                contenido.close()
-                                print("crado")
-                            except TypeError:
-                                print(TypeError)
-                                print("error de grabado de cambios")
-                            pos_bomba = (1,1)
-                    os.system("cls")
-                    visualizar_barco(barcosj1,j1_tablerobarcos)
-                    visualizar_disparos(pos_bomba,j1_tablerodisparos,tirosj1)
-                    dibujar(j1_tablerodisparos)
-                    dibujar(j1_tablerobarcos)
-                    print(tirosj1)
+                        if miturno == 1:
+                            disparo(pos_bomba,tirosj1_dados,confirmado,tirosj1_fallados,barcosj2,j1_tablerodisparos,j2_tablerobarcos)
+                        if miturno == 2:
+                            disparo(pos_bomba,tirosj2_dados,confirmado,tirosj2_fallados,barcosj1,j2_tablerodisparos,j1_tablerobarcos)
+                        convertir_a_numero(j1_tablerobarcos)
+                        convertir_a_numero(j1_tablerodisparos)
+                        convertir_a_numero(j2_tablerobarcos)
+                        convertir_a_numero(j2_tablerodisparos)
+                        tableros = json.dumps(partida)
+                        try:
+                            contenido = open(arch_tab, "w")
+                            contenido.write(tableros)
+                            contenido.close()
+                        except TypeError:
+                            print(TypeError)
+                            print("error de grabado de cambios")
+                        pos_bomba = (1,1)
                 presionado = True
             else:
                 presionado = False
         else:
             print("Esperando oponente...")
+            mensaje = recibir_mensaje(conexion)
+            if mensaje:
+                print("Recibí!")
+                partida = json.loads(mensaje)
+                turno = partida["turno"]
         if int(radar) != radar_aux:
-            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1,radar)
+            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
             radar_aux += 1
             if radar >= 7:
                 radar = 0
