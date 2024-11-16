@@ -259,6 +259,8 @@ def convertir_a_numero(tablero):
                 tablero[i][j] = "9"
             elif "═╝" in tablero[i][j]:
                 tablero[i][j] = "$"
+            elif " ║" in tablero[i][j]:
+                tablero[i][j] = "!"
             elif "║" in tablero[i][j]:
                 tablero[i][j] = "#"
             elif "░" in tablero[i][j]:
@@ -289,6 +291,8 @@ def convertir_a_caracteres(tablero):
                 tablero[i][j] = "\033[31m═╝\033[0m"
             elif "#" in tablero[i][j]:
                 tablero[i][j] = "\033[31m║\033[0m"
+            elif "!" in tablero[i][j]:
+                tablero[i][j] = " ║"
             elif "12" in tablero[i][j]:
                 tablero[i][j] = "\033[31m ░\033[0m"
 
@@ -493,7 +497,7 @@ def  enviar_mensaje(client_socket, mensaje):
     # Send the message to the server
     if mensaje["Datos"]["turno"] == 1:
         mensaje["Datos"]["turno"] = 2
-    if mensaje["Datos"]["turno"] == 2:
+    elif mensaje["Datos"]["turno"] == 2:
         mensaje["Datos"]["turno"] = 1
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
     
@@ -604,9 +608,13 @@ def juego():
     elif miturno == 2:
         actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
     while game == True:
-        if num_barco <=4 and barcosj1[num_barco] == []:
-            barcosj1[num_barco] = todos_barcos[num_barco]
-        elif num_barco == 5:
+        if miturno == 1:
+            if num_barco <=4 and barcosj1[num_barco] == []:
+                barcosj1[num_barco] = todos_barcos[num_barco]
+        elif miturno == 2:
+            if num_barco <=4 and barcosj2[num_barco] == []:
+                barcosj2[num_barco] = todos_barcos[num_barco]
+        if num_barco == 5 and miturno == turno:
             convertir_a_numero(j1_tablerodisparos)
             convertir_a_numero(j1_tablerobarcos)
             convertir_a_numero(j2_tablerodisparos)
@@ -756,7 +764,11 @@ def juego():
         else:
             mensaje = recibir_mensaje(conexion)
             if mensaje:
+                contenido = open(arch_tab, "w")
+                contenido.write(mensaje)
+                contenido.close()
                 partida = json.loads(mensaje)
+                partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
                 turno = partida["Datos"]["turno"]
         if int(radar) != radar_aux:
             if miturno == 1:

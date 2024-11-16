@@ -35,7 +35,10 @@ def handle_client(connection):
                 print(new_data[1])
                 print("#"*50)
                 print(new_data[2])
-                partida = {"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]}
+                print("#"*50)
+                print(partida)
+                partida.update({"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]})
+                print(partida)
                 #partida.update(new_data)
                 print(f'Data received and updated: {partida}')
 
