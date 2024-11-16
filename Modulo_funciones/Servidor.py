@@ -30,11 +30,17 @@ def handle_client(connection):
             if data:
                 # Actualizar el diccionario con los datos recibidos
                 new_data = json.loads(data)
-                partida.update(new_data)
+                print(new_data[0])
+                print("#"*50)
+                print(new_data[1])
+                print("#"*50)
+                print(new_data[2])
+                partida = {"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]}
+                #partida.update(new_data)
                 print(f'Data received and updated: {partida}')
 
                 # Enviar el diccionario actualizado a todos los clientes
-                mensaje = json.dumps(partida["Jugador 1"], partida["Jugador 2"], partida).encode('utf-8')
+                mensaje = json.dumps((partida["Jugador 1"], partida["Jugador 2"], partida["Datos"])).encode('utf-8')
                 broadcast(mensaje)
         except Exception as e:
             print(f'Error: {e}')
