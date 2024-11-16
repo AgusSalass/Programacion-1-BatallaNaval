@@ -243,14 +243,54 @@ def convertir_a_numero(tablero):
                 tablero[i][j] = "1"
             elif "¤" in tablero[i][j]:
                 tablero[i][j] = "2"
+            elif "~" in tablero[i][j]:
+                tablero[i][j] = "3"
+            elif "═" in tablero[i][j]:
+                tablero[i][j] = "4"
+            elif "═╣" in tablero[i][j]:
+                tablero[i][j] = "5"
+            elif "╔" in tablero[i][j]:
+                tablero[i][j] = "6"
+            elif  "═╗" in tablero[i][j]:
+                tablero[i][j] = "7"
+            elif "╚" in tablero[i][j]:
+                tablero[i][j] = "8"
+            elif "╠" in tablero[i][j]:
+                tablero[i][j] = "9"
+            elif "═╝" in tablero[i][j]:
+                tablero[i][j] = "$"
+            elif "║" in tablero[i][j]:
+                tablero[i][j] = "#"
+            elif "░" in tablero[i][j]:
+                tablero[i][j] = "12"
 
 def convertir_a_caracteres(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
-            if  "1" in tablero[i][j]:
+            if "1" in tablero[i][j]:
                 tablero[i][j] = "\033[90m ≡\033[0m"
             elif "2" in tablero[i][j]:
                 tablero[i][j] = "\033[31m ¤\033[0m"
+            elif "3" in tablero[i][j]:
+                tablero[i][j] = "\033[31m ~\033[0m"
+            elif "4" in tablero[i][j]:
+                tablero[i][j] = "\033[31m══\033[0m"
+            elif "5" in tablero[i][j]:
+                tablero[i][j] = "\033[31m═╣\033[0m"
+            elif "6" in tablero[i][j]:
+                tablero[i][j] = "\033[31m╔\033[0m"
+            elif "7" in tablero[i][j]:
+                tablero[i][j] = "\033[31m═╗\033[0m"
+            elif "8" in tablero[i][j]:
+                tablero[i][j] = "\033[31m╚\033[0m"
+            elif "9" in tablero[i][j]:
+                tablero[i][j] = "\033[31m╠\033[0m"
+            elif "$" in tablero[i][j]:
+                tablero[i][j] = "\033[31m═╝\033[0m"
+            elif "#" in tablero[i][j]:
+                tablero[i][j] = "\033[31m║\033[0m"
+            elif "12" in tablero[i][j]:
+                tablero[i][j] = "\033[31m ░\033[0m"
 
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
@@ -437,7 +477,7 @@ def esperar_conex():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Define the server address and port
-    server_address = ('192.168.104.1', 8080)
+    server_address = ('192.168.191.52', 8080)
 
     # Connect to the server
     client_socket.connect(server_address)
@@ -449,12 +489,12 @@ def  enviar_mensaje(client_socket, mensaje):
     # Send the message to the server
     if mensaje["turno"] == 1:
         mensaje["turno"] = 2
-    else:
+    if mensaje["turno"] == 2:
         mensaje["turno"] = 1
     data = json.dumps(mensaje)
     
     client_socket.sendall(data.encode('utf-8'))
-
+    
 def recibir_mensaje(client_socket):
     # Receive the message from the server
     try:
@@ -508,7 +548,7 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
-    j2_tablerodisparos= [["╔","═","═","═","═","═","═","═","═","═","═","╗"],
+    j2_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -519,7 +559,7 @@ def juego():
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["╠","═","═","═","═","═","═","═","═","═","═","╣"]]
+                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
     j2_tablerobarcos   = [["╠","══","══","══","══","══","══","══","══","══","══","═╣"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -531,7 +571,7 @@ def juego():
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                           ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["╚","═","═","═","═","═","═","═","═","═","═","╝"]]
+                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
     #TODO hacer un radar al costado del tablero
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
@@ -553,14 +593,25 @@ def juego():
     j2_listo = False
     radar_aux = 0
     salsa = "no recibi nada"
-    partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "jugador 2": {"tablero disparos": j2_tablerodisparos,
+    partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "Jugador 2": {"tablero disparos": j2_tablerodisparos,
                 "tablero barcos": j2_tablerobarcos}, "turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}
-    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+    if miturno == 1:
+        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+    elif miturno == 2:
+        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
     while game == True:
         if num_barco <=4 and barcosj1[num_barco] == []:
             barcosj1[num_barco] = todos_barcos[num_barco]
         elif num_barco == 5:
+            convertir_a_numero(j1_tablerodisparos)
+            convertir_a_numero(j1_tablerobarcos)
+            convertir_a_numero(j2_tablerodisparos)
+            convertir_a_numero(j2_tablerobarcos)
             enviar_mensaje(conexion, partida)
+            convertir_a_caracteres(j1_tablerodisparos)
+            convertir_a_caracteres(j1_tablerobarcos)
+            convertir_a_caracteres(j2_tablerodisparos)
+            convertir_a_caracteres(j2_tablerobarcos)
             print("envie mensaje")
             estado = "posicionar disparos"
             try:
@@ -568,9 +619,17 @@ def juego():
             except socket.herror:
                 print(socket.herror)
             if mensaje:
+                #partida = json.loads(mensaje)
+                #escritura = json.dumps(partida)
+                contenido = open(arch_tab, "w")
+                contenido.write(mensaje)
+                contenido.close()
                 partida = json.loads(mensaje)
                 turno = partida["turno"]
-            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+            if miturno == 1:
+                actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+            elif miturno == 2:
+                actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
         if turno == miturno:
             if keyboard.is_pressed('w'):
                 if presionado == False:
@@ -584,7 +643,10 @@ def juego():
                             pos_bomba = movimiento_disparo((-1,0),pos_bomba,j1_tablerodisparos)
                         if  miturno == 2:
                             pos_bomba = movimiento_disparo((-1,0),pos_bomba,j2_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    if miturno == 1:
+                        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    elif miturno == 2:
+                        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('s'):
                 if presionado == False:
@@ -598,7 +660,10 @@ def juego():
                             pos_bomba = movimiento_disparo((1,0),pos_bomba,j1_tablerodisparos)
                         if  miturno == 2:
                             pos_bomba = movimiento_disparo((1,0),pos_bomba,j2_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    if miturno == 1:
+                        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    elif miturno == 2:
+                        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('d'):
                 if presionado == False:
@@ -612,7 +677,10 @@ def juego():
                             pos_bomba = movimiento_disparo((0,1),pos_bomba,j1_tablerodisparos)
                         if  miturno == 2:
                             pos_bomba = movimiento_disparo((0,1),pos_bomba,j2_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    if miturno == 1:
+                        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    elif miturno == 2:
+                        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('a'):
                 if presionado == False:
@@ -626,7 +694,10 @@ def juego():
                             pos_bomba = movimiento_disparo((0,-1),pos_bomba,j1_tablerodisparos)
                         if  miturno == 2:
                             pos_bomba = movimiento_disparo((0,-1),pos_bomba,j2_tablerodisparos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    if miturno == 1:
+                        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    elif miturno == 2:
+                        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('r'):
                 if presionado == False:
@@ -641,7 +712,10 @@ def juego():
                                 rotacion_a_vertical(barcosj2,num_barco,j2_tablerobarcos)
                             else:
                                 rotacion_a_horizontal(barcosj2,num_barco,j2_tablerobarcos)
-                    actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    if miturno == 1:
+                        actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+                    elif miturno == 2:
+                        actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
                 presionado = True
             elif keyboard.is_pressed('e'):
                 if presionado == False:
@@ -681,7 +755,10 @@ def juego():
                 partida = json.loads(mensaje)
                 turno = partida["turno"]
         if int(radar) != radar_aux:
-            actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+            if miturno == 1:
+                actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
+            elif miturno == 2:
+                actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
             radar_aux += 1
             if radar >= 7:
                 radar = 0
