@@ -363,7 +363,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
 
-def confirmar_barco(barcos,barco,partido,arch_tablero,tablero1,tablero_disparo1,tablero2,tablero_disparo2):
+def confirmar_barco(barcos,barco,partido,arch_tab,tablero1,tablero_disparo1,tablero2,tablero_disparo2):
     posible = True
     for coordenada in range(len(barcos[barco])):
         if posible:
@@ -381,7 +381,7 @@ def confirmar_barco(barcos,barco,partido,arch_tablero,tablero1,tablero_disparo1,
         convertir_a_numero(tablero2)
         tableros = json.dumps((partido["Jugador 1"], partido["Jugador 2"], partido["Datos"]))
         try:
-            contenido = open(arch_tablero, "w")
+            contenido = open(arch_tab, "w")
             contenido.write(tableros)
             contenido.close()
         except TypeError:
@@ -493,13 +493,21 @@ def esperar_conex():
     
     return client_socket
 
-def  enviar_mensaje(client_socket, mensaje):
+def  enviar_mensaje(client_socket, mensaje, arch_tab):
     # Send the message to the server
     if mensaje["Datos"]["turno"] == 1:
         mensaje["Datos"]["turno"] = 2
     elif mensaje["Datos"]["turno"] == 2:
         mensaje["Datos"]["turno"] = 1
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
+    
+    try:
+        contenido = open(arch_tab, "w")
+        contenido.write(data)
+        contenido.close()
+    except TypeError:
+        print(TypeError)
+        print("error de grabado de cambios")
     
     client_socket.sendall(data.encode('utf-8'))
     
@@ -619,7 +627,7 @@ def juego():
             convertir_a_numero(j1_tablerobarcos)
             convertir_a_numero(j2_tablerodisparos)
             convertir_a_numero(j2_tablerobarcos)
-            enviar_mensaje(conexion, partida)
+            enviar_mensaje(conexion, partida, arch_tab)
             convertir_a_caracteres(j1_tablerodisparos)
             convertir_a_caracteres(j1_tablerobarcos)
             convertir_a_caracteres(j2_tablerodisparos)
@@ -634,9 +642,9 @@ def juego():
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
+                partida.clear()
                 partida = json.loads(mensaje)
                 partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
-                print(partida)
                 turno = partida["Datos"]["turno"]
             if miturno == 1:
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
@@ -767,6 +775,7 @@ def juego():
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
+                partida.clear()
                 partida = json.loads(mensaje)
                 partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
                 turno = partida["Datos"]["turno"]
