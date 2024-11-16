@@ -34,7 +34,7 @@ def handle_client(connection):
                 print(f'Data received and updated: {partida}')
 
                 # Enviar el diccionario actualizado a todos los clientes
-                mensaje = json.dumps(partida).encode('utf-8')
+                mensaje = json.dumps(partida["Jugador 1"], partida["Jugador 2"], partida).encode('utf-8')
                 broadcast(mensaje)
         except Exception as e:
             print(f'Error: {e}')
