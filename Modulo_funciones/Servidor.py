@@ -37,6 +37,7 @@ def handle_client(connection):
                 print(new_data[2])
                 print("#"*50)
                 print(partida)
+                partida.clear()
                 partida.update({"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]})
                 print(partida)
                 #partida.update(new_data)
