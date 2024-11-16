@@ -274,27 +274,27 @@ def convertir_a_caracteres(tablero):
             elif "2" in tablero[i][j]:
                 tablero[i][j] = "\033[31m ¤\033[0m"
             elif "3" in tablero[i][j]:
-                tablero[i][j] = "\033[31m ~\033[0m"
+                tablero[i][j] = "\033[36m ~\033[0m"
             elif "4" in tablero[i][j]:
-                tablero[i][j] = "\033[31m══\033[0m"
+                tablero[i][j] = "══"
             elif "5" in tablero[i][j]:
-                tablero[i][j] = "\033[31m═╣\033[0m"
+                tablero[i][j] = "═╣"
             elif "6" in tablero[i][j]:
-                tablero[i][j] = "\033[31m╔\033[0m"
+                tablero[i][j] = "╔"
             elif "7" in tablero[i][j]:
-                tablero[i][j] = "\033[31m═╗\033[0m"
+                tablero[i][j] = "═╗"
             elif "8" in tablero[i][j]:
-                tablero[i][j] = "\033[31m╚\033[0m"
+                tablero[i][j] = "╚"
             elif "9" in tablero[i][j]:
-                tablero[i][j] = "\033[31m╠\033[0m"
+                tablero[i][j] = "╠"
             elif "$" in tablero[i][j]:
-                tablero[i][j] = "\033[31m═╝\033[0m"
+                tablero[i][j] = "═╝"
             elif "#" in tablero[i][j]:
-                tablero[i][j] = "\033[31m║\033[0m"
+                tablero[i][j] = "║"
             elif "!" in tablero[i][j]:
                 tablero[i][j] = " ║"
             elif "12" in tablero[i][j]:
-                tablero[i][j] = "\033[31m ░\033[0m"
+                tablero[i][j] = " ░"
 
 def scoreboard():
     path=os.path.dirname(os.path.abspath(__file__))
@@ -512,7 +512,6 @@ def  enviar_mensaje(client_socket, mensaje, arch_tab):
     client_socket.sendall(data.encode('utf-8'))
     
 def recibir_mensaje(client_socket):
-    # Receive the message from the server
     try:
         data = client_socket.recv(1048576).decode('utf-8')
     except socket.herror:
@@ -632,8 +631,8 @@ def juego():
             convertir_a_caracteres(j1_tablerobarcos)
             convertir_a_caracteres(j2_tablerodisparos)
             convertir_a_caracteres(j2_tablerobarcos)
+            num_barco +=1
             print("envie mensaje")
-            estado = "posicionar disparos"
             try:
                 mensaje = recibir_mensaje(conexion)
             except socket.herror:
@@ -650,6 +649,8 @@ def juego():
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
             elif miturno == 2:
                 actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
+        if partida["Datos"]["j1_listo"] == True and partida["Datos"]["j2_listo"] == True:
+            estado = "posicionar disparos"
         if turno == miturno:
             if keyboard.is_pressed('w'):
                 if presionado == False:
@@ -757,6 +758,11 @@ def juego():
                         convertir_a_numero(j1_tablerodisparos)
                         convertir_a_numero(j2_tablerobarcos)
                         convertir_a_numero(j2_tablerodisparos)
+                        enviar_mensaje(conexion, partida, arch_tab)
+                        convertir_a_caracteres(j1_tablerodisparos)
+                        convertir_a_caracteres(j1_tablerobarcos)
+                        convertir_a_caracteres(j2_tablerodisparos)
+                        convertir_a_caracteres(j2_tablerobarcos)
                         tableros = json.dumps((partida["Jugador 1"], partida["Jugador 2"], partida["Datos"]))
                         try:
                             contenido = open(arch_tab, "w")
