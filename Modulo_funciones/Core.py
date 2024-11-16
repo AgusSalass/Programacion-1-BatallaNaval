@@ -245,7 +245,7 @@ def convertir_a_numero(tablero):
                 tablero[i][j] = "2"
             elif "~" in tablero[i][j]:
                 tablero[i][j] = "3"
-            elif "═" in tablero[i][j]:
+            elif "══" in tablero[i][j]:
                 tablero[i][j] = "4"
             elif "═╣" in tablero[i][j]:
                 tablero[i][j] = "5"
@@ -373,7 +373,7 @@ def confirmar_barco(barcos,barco,partido,arch_tablero,tablero,tablero_disparo):
     if barco == 5:
         convertir_a_numero(tablero_disparo)
         convertir_a_numero(tablero)
-        tableros = json.dumps(partido)
+        tableros = json.dumps(partido["Jugador 1"], partido["Jugador 2"], partido).encode('utf-8')
         try:
             contenido = open(arch_tablero, "w")
             contenido.write(tableros)
@@ -491,7 +491,7 @@ def  enviar_mensaje(client_socket, mensaje):
         mensaje["turno"] = 2
     if mensaje["turno"] == 2:
         mensaje["turno"] = 1
-    data = json.dumps(mensaje)
+    data = json.dumps(mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje).encode('utf-8')
     
     client_socket.sendall(data.encode('utf-8'))
     
@@ -619,8 +619,6 @@ def juego():
             except socket.herror:
                 print(socket.herror)
             if mensaje:
-                #partida = json.loads(mensaje)
-                #escritura = json.dumps(partida)
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
@@ -737,7 +735,7 @@ def juego():
                         convertir_a_numero(j1_tablerodisparos)
                         convertir_a_numero(j2_tablerobarcos)
                         convertir_a_numero(j2_tablerodisparos)
-                        tableros = json.dumps(partida)
+                        tableros = json.dumps(partida["Jugador 1"], partida["Jugador 2"], partida).encode('utf-8')
                         try:
                             contenido = open(arch_tab, "w")
                             contenido.write(tableros)
