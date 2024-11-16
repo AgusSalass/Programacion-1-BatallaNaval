@@ -11,7 +11,7 @@ clients = []
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Define the server address and port
-server_address = ('192.168.104.1', 8080)
+server_address = ('192.168.191.52', 8080)
 
 # Bind the socket to the address and port
 server_socket.bind(server_address)
@@ -26,7 +26,7 @@ def handle_client(connection):
     while True:
         try:
             # Recibir datos del cliente
-            data = connection.recv(1024).decode('utf-8')
+            data = connection.recv(1048576).decode('utf-8')
             if data:
                 # Actualizar el diccionario con los datos recibidos
                 new_data = json.loads(data)
@@ -34,12 +34,13 @@ def handle_client(connection):
                 print(f'Data received and updated: {partida}')
 
                 # Enviar el diccionario actualizado a todos los clientes
-                broadcast(json.dumps(partida).encode('utf-8'))
+                mensaje = json.dumps(partida).encode('utf-8')
+                broadcast(mensaje)
         except Exception as e:
             print(f'Error: {e}')
 
-        connection.close()
-        clients.remove(connection)
+        #connection.close()
+        #clients.remove(connection)
 
 def broadcast(message):
     for client in clients:
