@@ -362,7 +362,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
                 barcos[barco] = copy.deepcopy(aux)
             else:
                 barcos[barco][coordenada]=(new_x,new_y)
-                    #barcosj2,num_barco, partida, arch_tab,j1_tablerobarcos,j1_tablerodisparos,j2_tablerobarcos,j2_tablerodisparos
+
 def confirmar_barco(barcos,barco,partido,arch_tab,tablero1,tablero_disparo1,tablero2,tablero_disparo2):
     posible = True
     for coordenada in range(len(barcos[barco])):
@@ -491,10 +491,6 @@ def esperar_conex():
 
 def  enviar_mensaje(client_socket, mensaje, arch_tab):
     # Send the message to the server
-    if mensaje["Datos"]["turno"] == 1:
-        mensaje["Datos"]["turno"] = 2
-    elif mensaje["Datos"]["turno"] == 2:
-        mensaje["Datos"]["turno"] = 1
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
     
     try:
@@ -523,23 +519,13 @@ def juego():
     arch_tab = os.path.join(path_tableros, f"Tableros.json")
     o = "\033[36m ~\033[0m"
     b = "\033[90m ≡\033[0m"
-    portaaviones = b
-    mulportaaviones = 5
-    destructor = b
-    muldestructor = 4
-    crucero1 = (f"\033[31mDestruido\033[0m")
-    mulcrucero1= 1
-    crucero2 = b
-    mulcrucero2 = 3
-    lancha = b
-    mullancha = 2
     # ░≡¤
 
-    j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗","portaaviones: ",portaaviones*mulportaaviones],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║","destructor: ",destructor*muldestructor],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║","crucero: ",crucero1*mulcrucero1],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║","crucero: ",crucero2*mulcrucero2],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║","lancha: ", lancha*mullancha],
+    j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
+                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -611,6 +597,7 @@ def juego():
     elif miturno == 2:
         actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,salsa)
     while game == True:
+        fin_de_turno = False
         if miturno == 1:
             if num_barco <=4 and barcosj1[num_barco] == []:
                 barcosj1[num_barco] = todos_barcos[num_barco]
@@ -637,9 +624,19 @@ def juego():
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
-                partida.clear()
                 partida = json.loads(mensaje)
-                partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
+                j1_tablerodisparos = partida[0]["tablero disparos"]
+                j1_tablerobarcos = partida[0]["tablero barcos"]
+                j2_tablerodisparos = partida[1]["tablero disparos"]
+                j2_tablerobarcos = partida[1]["tablero barcos"]
+                turno = partida[2]["turno"]
+                j1_listo = partida[2]["j1_listo"]
+                j2_listo = partida[2]["j2_listo"]
+                partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos}, "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}}
+                convertir_a_caracteres(j1_tablerodisparos)
+                convertir_a_caracteres(j1_tablerobarcos)
+                convertir_a_caracteres(j2_tablerodisparos)
+                convertir_a_caracteres(j2_tablerobarcos)
                 turno = partida["Datos"]["turno"]
             if miturno == 1:
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
@@ -760,6 +757,7 @@ def juego():
                         convertir_a_caracteres(j1_tablerobarcos)
                         convertir_a_caracteres(j2_tablerodisparos)
                         convertir_a_caracteres(j2_tablerobarcos)
+                        fin_de_turno = True
                         pos_bomba = (1,1)
                     if miturno == 1:
                         actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
@@ -768,19 +766,21 @@ def juego():
                 presionado = True
             else:
                 presionado = False
-        else:
+        if fin_de_turno or turno != miturno:
             mensaje = recibir_mensaje(conexion)
             if mensaje:
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
-                partida.clear()
                 partida = json.loads(mensaje)
-                partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
-                j1_tablerodisparos = partida["Jugador 1"]["tablero disparos"]
-                j1_tablerobarcos = partida["Jugador 1"]["tablero barcos"]
-                j2_tablerodisparos = partida["Jugador 2"]["tablero disparos"]
-                j2_tablerobarcos = partida["Jugador 2"]["tablero barcos"]
+                j1_tablerodisparos = partida[0]["tablero disparos"]
+                j1_tablerobarcos = partida[0]["tablero barcos"]
+                j2_tablerodisparos = partida[1]["tablero disparos"]
+                j2_tablerobarcos = partida[1]["tablero barcos"]
+                turno = partida[2]["turno"]
+                j1_listo = partida[2]["j1_listo"]
+                j2_listo = partida[2]["j2_listo"]
+                partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos}, "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos}, "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}}
                 convertir_a_caracteres(j1_tablerodisparos)
                 convertir_a_caracteres(j1_tablerobarcos)
                 convertir_a_caracteres(j2_tablerodisparos)
@@ -799,4 +799,3 @@ def juego():
         clock.tick(24)
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
           "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas","McLovin"]
-#menu de inicio,2 proyecto, 1 equipo, y 4 ejecutar para salir

@@ -34,6 +34,10 @@ def handle_client(connection):
                 # Actualizar el diccionario con los datos recibidos
                 new_data = json.loads(data)
                 partida = ({"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]})
+                if partida["Datos"]["turno"] == 1:
+                    partida["Datos"]["turno"] = 2
+                elif partida["Datos"]["turno"] == 2:
+                    partida["Datos"]["turno"] = 1
                 #partida.update(new_data)
                 print(f'Data received and updated: {partida}')
 
