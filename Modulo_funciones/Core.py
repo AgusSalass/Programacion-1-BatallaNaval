@@ -239,61 +239,61 @@ def dibujar(tablero):
 def convertir_a_numero(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
-            if "≡" in tablero[i][j]:
-                tablero[i][j] = "1"
-            elif "¤" in tablero[i][j]:
-                tablero[i][j] = "2"
-            elif "~" in tablero[i][j]:
+            if "\033[36m ~\033[0m" == tablero[i][j]:
                 tablero[i][j] = "3"
-            elif "══" in tablero[i][j]:
+            elif "\033[31m ¤\033[0m" == tablero[i][j]:
+                tablero[i][j] = "2"
+            elif "\033[90m ≡\033[0m" == tablero[i][j]:
+                tablero[i][j] = "%"
+            elif "══" == tablero[i][j]:
                 tablero[i][j] = "4"
-            elif "═╣" in tablero[i][j]:
+            elif "═╣" == tablero[i][j]:
                 tablero[i][j] = "5"
-            elif "╔" in tablero[i][j]:
+            elif "╔" == tablero[i][j]:
                 tablero[i][j] = "6"
-            elif  "═╗" in tablero[i][j]:
+            elif  "═╗" == tablero[i][j]:
                 tablero[i][j] = "7"
-            elif "╚" in tablero[i][j]:
+            elif "╚" == tablero[i][j]:
                 tablero[i][j] = "8"
-            elif "╠" in tablero[i][j]:
+            elif "╠" == tablero[i][j]:
                 tablero[i][j] = "9"
-            elif "═╝" in tablero[i][j]:
+            elif "═╝" == tablero[i][j]:
                 tablero[i][j] = "$"
-            elif " ║" in tablero[i][j]:
+            elif " ║" == tablero[i][j]:
                 tablero[i][j] = "!"
-            elif "║" in tablero[i][j]:
+            elif "║" == tablero[i][j]:
                 tablero[i][j] = "#"
-            elif "░" in tablero[i][j]:
+            elif "░" == tablero[i][j]:
                 tablero[i][j] = "*"
 
 def convertir_a_caracteres(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
-            if "1" in tablero[i][j]:
-                tablero[i][j] = "\033[90m ≡\033[0m"
-            elif "2" in tablero[i][j]:
-                tablero[i][j] = "\033[31m ¤\033[0m"
-            if "3" in tablero[i][j]:
+            if "3" == tablero[i][j]:
                 tablero[i][j] = "\033[36m ~\033[0m"
-            elif "4" in tablero[i][j]:
+            elif "%" == tablero[i][j]:
+                tablero[i][j] = "\033[90m ≡\033[0m"
+            elif "2" == tablero[i][j]:
+                tablero[i][j] = "\033[31m ¤\033[0m"
+            elif "4" == tablero[i][j]:
                 tablero[i][j] = "══"
-            elif "5" in tablero[i][j]:
+            elif "5" == tablero[i][j]:
                 tablero[i][j] = "═╣"
-            elif "6" in tablero[i][j]:
+            elif "6" == tablero[i][j]:
                 tablero[i][j] = "╔"
-            elif "7" in tablero[i][j]:
+            elif "7" == tablero[i][j]:
                 tablero[i][j] = "═╗"
-            elif "8" in tablero[i][j]:
+            elif "8" == tablero[i][j]:
                 tablero[i][j] = "╚"
-            elif "9" in tablero[i][j]:
+            elif "9" == tablero[i][j]:
                 tablero[i][j] = "╠"
-            elif "$" in tablero[i][j]:
+            elif "$" == tablero[i][j]:
                 tablero[i][j] = "═╝"
-            elif "#" in tablero[i][j]:
+            elif "#" == tablero[i][j]:
                 tablero[i][j] = "║"
-            elif "!" in tablero[i][j]:
+            elif "!" == tablero[i][j]:
                 tablero[i][j] = " ║"
-            elif "*" in tablero[i][j]:
+            elif "*" == tablero[i][j]:
                 tablero[i][j] = " ░"
 
 def scoreboard():
@@ -640,6 +640,7 @@ def juego():
                 partida.clear()
                 partida = json.loads(mensaje)
                 partida = {"Jugador 1": partida[0], "Jugador 2": partida[1], "Datos": partida[2]}
+                turno = partida["Datos"]["turno"]
             if miturno == 1:
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,salsa)
             elif miturno == 2:
@@ -780,7 +781,6 @@ def juego():
                 j1_tablerobarcos = partida["Jugador 1"]["tablero barcos"]
                 j2_tablerodisparos = partida["Jugador 2"]["tablero disparos"]
                 j2_tablerobarcos = partida["Jugador 2"]["tablero barcos"]
-                turno = partida["Datos"]["turno"]
                 convertir_a_caracteres(j1_tablerodisparos)
                 convertir_a_caracteres(j1_tablerobarcos)
                 convertir_a_caracteres(j2_tablerodisparos)
