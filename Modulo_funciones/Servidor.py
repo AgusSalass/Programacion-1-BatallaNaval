@@ -33,29 +33,16 @@ def handle_client(connection):
             if data:
                 # Actualizar el diccionario con los datos recibidos
                 new_data = json.loads(data)
-                print(new_data[0])
-                print("#"*50)
-                print(new_data[1])
-                print("#"*50)
-                print(new_data[2])
-                print("#"*50)
-                print(partida)
-                partida.clear()
-                partida.update({"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]})
-                print(partida)
+                partida = ({"Jugador 1": new_data[0], "Jugador 2": new_data[1], "Datos": new_data[2]})
                 #partida.update(new_data)
                 print(f'Data received and updated: {partida}')
 
                 # Enviar el diccionario actualizado a todos los clientes
-                mensaje = json.dumps((partida["Jugador 1"], partida["Jugador 2"], partida["Datos"])).encode('utf-8')
-                try:
-                    contenido = open(arch_tab, "w")
-                    contenido.write(mensaje)
-                    contenido.close()
-                except TypeError:
-                    print(TypeError)
-                    print("error de grabado de cambios")
-                broadcast(mensaje)
+                mensaje = json.dumps((partida["Jugador 1"], partida["Jugador 2"], partida["Datos"]))
+                contenido = open(arch_tab, "w")
+                contenido.write(mensaje)
+                contenido.close()
+                broadcast(mensaje.encode('utf-8'))
         except Exception as e:
             print(f'Error: {e}')
 
