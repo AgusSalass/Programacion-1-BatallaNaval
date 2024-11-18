@@ -134,6 +134,7 @@ def menu():
     x = 0
     pygame.init()
     clock = pygame.time.Clock()
+    presionado = True
     while repetir:
         # print("░"*4865)
         print("\033[0;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
@@ -223,7 +224,7 @@ def menu():
             print("\033[21;60H    Proyecto    ")
             print("\033[22;60H Instrucciones ")
             print("\033[23;60H\033[104m     Salir     \033[0m")
-
+            
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if op-1 != -1:
@@ -530,7 +531,7 @@ def esperar_conex():
 def  enviar_mensaje(client_socket, mensaje, arch_tab):
     # Send the message to the server
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
-    
+    data=data+"FinDeMensaje"
     try:
         contenido = open(arch_tab, "w")
         contenido.write(data)
@@ -543,7 +544,13 @@ def  enviar_mensaje(client_socket, mensaje, arch_tab):
     
 def recibir_mensaje(client_socket):
     try:
-        data = client_socket.recv(1048576).decode('utf-8')
+        mensajeCompleto=False
+        data=""
+        while not mensajeCompleto:
+            data = data + client_socket.recv(1048576).decode('utf-8')
+            if data.endswith("FinDeMensaje"):
+                data=data[0:len(data)-12]
+                mensajeCompleto=True
     except socket.herror:
         print(socket.herror)
     return data
@@ -852,6 +859,7 @@ def juego():
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,estado,turno,miturno)
             elif miturno == 2:
                 actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,estado,turno,miturno)
+            time.sleep(0.25)
             mensaje = recibir_mensaje(conexion)
             if mensaje:
                 contenido = open(arch_tab, "w")
