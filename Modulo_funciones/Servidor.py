@@ -23,8 +23,6 @@ server_socket.listen(4)  # Allow up to 2 connections
 print("Server started. Waiting for connections...")
 
 def handle_client(connection):
-    path_tableros = os.path.dirname(os.path.abspath(__file__))
-    arch_tab = os.path.join(path_tableros, f"Tableros.json")
     global partida
     while True:
         try:
@@ -49,9 +47,6 @@ def handle_client(connection):
 
                 # Enviar el diccionario actualizado a todos los clientes
                 mensaje = json.dumps((partida["Jugador 1"], partida["Jugador 2"], partida["Datos"]))
-                contenido = open(arch_tab, "w")
-                contenido.write(mensaje)
-                contenido.close()
                 broadcast(mensaje)
         except Exception as e:
             print(f'Error: {e}')
