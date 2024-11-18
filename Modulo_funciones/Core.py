@@ -344,7 +344,7 @@ def convertir_a_caracteres(tablero):
             elif "!" == tablero[i][j]:
                 tablero[i][j] = " ║"
             elif "*" == tablero[i][j]:
-                tablero[i][j] = "\033[97m ░\033"
+                tablero[i][j] = "\033[97m ░\033[0m"
 
 def movimiento_barco(direccion,barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -484,12 +484,12 @@ def deteccion_disparo(disparo,tablero_disparo,tablerobarcos):
     x,y = disparo
     encontrado = False
     if  "≡" in tablerobarcos[x][y]:
-        tablero_disparo[x][y] = "\033[31m ¤\033"
-        tablerobarcos[x][y] = "\033[31m ¤\033"
+        tablero_disparo[x][y] = "\033[31m ¤\033[0m"
+        tablerobarcos[x][y] = "\033[31m ¤\033[0m"
         encontrado = True
     else:
-        tablero_disparo[x][y] = "\033[97m ░\033"
-        tablerobarcos[x][y] = "\033[97m ░\033"
+        tablero_disparo[x][y] = "\033[97m ░\033[0m"
+        tablerobarcos[x][y] = "\033[97m ░\033[0m"
     return encontrado
 
 def actualizar_pantalla(barcos,tablerobarcos,pos_bomba,tablerodisparos,tiros_dados,radar,tiros_fallados,estado,turno,miturno):
@@ -634,7 +634,7 @@ def juego():
         actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,estado,turno,miturno)
     elif miturno == 2:
         actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,estado,turno,miturno)
-    while not jugador1gana and not jugador2gana:
+    while not partida["Datos"]["jugador1gana"] and not partida["Datos"]["jugador2gana"]:
         fin_de_turno = False
         if turno == miturno:
             if miturno == 1:
@@ -809,8 +809,8 @@ def juego():
                                                         del barcosj2[barco]
                                                         print("HUNDIDO!")
                                                         time.sleep(1.5)
-                                if len(barcosj2) == 0:
-                                    jugador1gana = True
+                                if barcosj2 == []:
+                                    partida["Datos"]["jugador1gana"] = True
 
                             elif miturno == 2:
                                 encontrado = False
@@ -821,14 +821,14 @@ def juego():
                                                 if barcosj1[barco][coordenada][0] == pos_bomba[0] and barcosj1[barco][coordenada][1] == pos_bomba[1]:
                                                     encontrado = True
                                                     del barcosj1[barco][coordenada]
-                                                    print("TOCADO!")
-                                                    time.sleep(1.5)
+                                                    print("TOCADO")
+                                                    time.sleep(1)
                                                     if barcosj1[barco] == []:
                                                         del barcosj1[barco]
                                                         print("HUNDIDO!")
-                                                        time.sleep(1.5)
-                                if len(barcosj1) == 0:
-                                    jugador2gana = True
+                                                        time.sleep(1)
+                                if barcosj1 == []:
+                                    partida["Datos"]["jugador2gana"] = True
                             convertir_a_numero(j1_tablerobarcos)
                             convertir_a_numero(j1_tablerodisparos)
                             convertir_a_numero(j2_tablerobarcos)
