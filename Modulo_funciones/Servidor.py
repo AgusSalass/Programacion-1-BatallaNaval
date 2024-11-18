@@ -52,7 +52,7 @@ def handle_client(connection):
                 contenido = open(arch_tab, "w")
                 contenido.write(mensaje)
                 contenido.close()
-                broadcast(mensaje.encode('utf-8'))
+                broadcast(mensaje)
         except Exception as e:
             print(f'Error: {e}')
 
@@ -63,7 +63,7 @@ def broadcast(message):
     message=message+"FinDeMensaje"
     for client in clients:
         try:
-            client.sendall(message)
+            client.sendall(message.encode('utf-8'))
         except:
             client.close()
             clients.remove(client)

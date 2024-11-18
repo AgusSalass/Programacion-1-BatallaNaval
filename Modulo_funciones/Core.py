@@ -859,7 +859,6 @@ def juego():
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,estado,turno,miturno)
             elif miturno == 2:
                 actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,estado,turno,miturno)
-            time.sleep(0.25)
             mensaje = recibir_mensaje(conexion)
             if mensaje:
                 contenido = open(arch_tab, "w")
