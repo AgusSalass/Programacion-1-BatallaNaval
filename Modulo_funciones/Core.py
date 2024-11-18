@@ -323,20 +323,26 @@ def convertir_a_caracteres(tablero):
                 tablero[i][j] = "\033[90m ≡\033[0m"
             elif "2" == tablero[i][j]:
                 tablero[i][j] = "\033[31m ¤\033[0m"
-
-def scoreboard():
-    path=os.path.dirname(os.path.abspath(__file__))
-    arch_div = os.path.join(path, f"Usuarios.json")
-    tablas=open(arch_div, "r")
-    contenido_tablas=json.load(tablas)
-    tablas.close()
-    tuplas_usuarios=[]
-    for usuario in contenido_tablas:
-        puntaje=contenido_tablas[usuario]["puntaje"]
-        tuplas_usuarios.append((puntaje,usuario))
-    print(tuplas_usuarios)
-    tuplas_o=tuple(sorted(tuplas_usuarios,reverse=True))
-    print(tuplas_o)
+            elif "4" == tablero[i][j]:
+                tablero[i][j] = "══"
+            elif "5" == tablero[i][j]:
+                tablero[i][j] = "═╣"
+            elif "6" == tablero[i][j]:
+                tablero[i][j] = "╔"
+            elif "7" == tablero[i][j]:
+                tablero[i][j] = "═╗"
+            elif "8" == tablero[i][j]:
+                tablero[i][j] = "╚"
+            elif "9" == tablero[i][j]:
+                tablero[i][j] = "╠"
+            elif "$" == tablero[i][j]:
+                tablero[i][j] = "═╝"
+            elif "#" == tablero[i][j]:
+                tablero[i][j] = "║"
+            elif "!" == tablero[i][j]:
+                tablero[i][j] = " ║"
+            elif "*" == tablero[i][j]:
+                tablero[i][j] = "\033[97m ░\033"
 
 def movimiento_barco(direccion,barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -876,4 +882,49 @@ def juego():
         radar +=0.1
         clock.tick(24)
 equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
-          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas","McLovin"]
+          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas"]
+
+def revancha():
+    cursor.hide()
+    repetir = True
+    op = 0
+    pygame.init()
+    clock = pygame.time.Clock()
+    while repetir:
+        print("\033[1;25H      ::::::::      :::       :::   :::   ::::::::::          ::::::::  :::     ::: :::::::::: ::::::::: ")
+        print("\033[2;25H    :+:    :+:   :+: :+:    :+:+: :+:+:  :+:                :+:    :+: :+:     :+: :+:        :+:    :+: ")
+        print("\033[3;25H   +:+         +:+   +:+  +:+ +:+:+ +:+ +:+                +:+    +:+ +:+     +:+ +:+        +:+    +:+  ")
+        print("\033[4;25H  :#:        +#++:++#++: +#+  +:+  +#+ +#++:++#           +#+    +:+ +#+     +:+ +#++:++#   +#++:++#:    ")
+        print("\033[5;25H +#+   +#+# +#+     +#+ +#+       +#+ +#+                +#+    +#+  +#+   +#+  +#+        +#+    +#+    ")
+        print("\033[6;25H#+#    #+# #+#     #+# #+#       #+# #+#                #+#    #+#   #+#+#+#   #+#        #+#    #+#     ")
+        print("\033[7;25H########  ###     ### ###       ### ##########          ########      ###     ########## ###    ###      ")
+        clock.tick(24)
+        os.system("cls")
+        if op == 0:
+            print("\033[9;70H\033[104m Revancha \033[0m")
+            print("\033[10;70H Rendirse ")
+        elif op == 1:
+            print("\033[9;70H Revancha ")
+            print("\033[10;70H\033[104m Rendirse \033[0m")
+        if keyboard.is_pressed('w'):
+            if presionado == False:
+                if op-1 != -1:
+                    op-=1
+            presionado = True
+        elif keyboard.is_pressed('s'):
+            if presionado == False:
+                if op+1 != 2:
+                    op += 1
+            presionado = True
+        elif keyboard.is_pressed('e'):
+            if presionado == False:
+                if op == 0:
+                    repetir = False
+                    juego()
+                elif op == 1:
+                    repetir = False
+                    menu()
+            presionado = True
+        else:
+            presionado = False
+revancha()
