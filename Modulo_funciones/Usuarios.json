@@ -1,38 +1,31 @@
 {
-    "12345": {
-        "contrasena": "12345",
+    "nicolas": {
+        "alias": "NIC",
+        "contrasena": "nicolas",
+        "puntaje": 0    },
+    "marian": {
+        "alias": "MAR",
+        "contrasena": "marian",
+        "puntaje": 1
+    },
+    "ezequiel": {
+        "alias": "EZE",
+        "contrasena": "ezequiel",
+        "puntaje": 2
+    },
+    "agustin": {
+        "alias": "AGU",
+        "contrasena": "agustin",
+        "puntaje": 3
+    },
+    "francisco": {
+        "alias": "FRN",
+        "contrasena": "francisco",
+        "puntaje": 4
+    },
+    "tomas": {
+        "alias": "TOM",
+        "contrasena": "tomas",
         "puntaje": 5
-    },
-    "123456": {
-        "contrasena": "111111",
-        "puntaje": 2
-    },
-    "vrevcvdf": {
-        "contrasena": "sdfss",
-        "puntaje": 8
-    },
-    "qwert": {
-        "contrasena": "qwert",
-        "puntaje": 2
-    },
-    "1234567": {
-        "contrasena": "1234567",
-        "puntaje": 0
-    },
-    "123124": {
-        "contrasena": "214561",
-        "puntaje": 0
-    },
-    "1231241251": {
-        "contrasena": "12312412412",
-        "puntaje": 0
-    },
-    "esdsada": {
-        "contrasena": "asdsadsa",
-        "puntaje": 0
-    },
-    "se11321": {
-        "contrasena": "sdadas",
-        "puntaje": 0
     }
 }
