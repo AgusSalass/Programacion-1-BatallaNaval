@@ -29,7 +29,13 @@ def handle_client(connection):
     while True:
         try:
             # Recibir datos del cliente
-            data = connection.recv(1048576).decode('utf-8')
+            mensajeCompleto=False
+            data=""
+            while not mensajeCompleto:
+                data = data + connection.recv(1048576).decode('utf-8')
+                if data.endswith("FinDeMensaje"):
+                    data=data[0:len(data)-12]
+                    mensajeCompleto=True
             if data:
                 # Actualizar el diccionario con los datos recibidos
                 new_data = json.loads(data)
@@ -54,9 +60,10 @@ def handle_client(connection):
         #clients.remove(connection)
 
 def broadcast(message):
+    message=message+"FinDeMensaje"
     for client in clients:
         try:
-            client.send(message)
+            client.sendall(message)
         except:
             client.close()
             clients.remove(client)
