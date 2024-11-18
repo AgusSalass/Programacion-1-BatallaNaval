@@ -616,7 +616,7 @@ def juego():
     pos_bomba = (1,1)
     radar = 0
     turno = 1
-    miturno = 2
+    miturno = 1
     game = True
     estado = "posicionar barcos"
     confirmado = True
