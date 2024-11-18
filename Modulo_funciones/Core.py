@@ -100,6 +100,8 @@ def mostrar_leaderboard(diccionario_usuarios):
 
 def mostrar_equipo():
     os.system("cls")
+    equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
+          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas"]
     print("Este es nuestro equipo")
     for miembro in equipo:
         print(miembro)
@@ -617,21 +619,22 @@ def juego():
     radar = 0
     turno = 1
     miturno = 1
-    game = True
     estado = "posicionar barcos"
     confirmado = True
     presionado = True
     j1_listo = False
     j2_listo = False
+    jugador1gana = False
+    jugador2gana = False
     radar_aux = 0
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
-               "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}}
+               "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}
     if miturno == 1:
         actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,estado,turno,miturno)
     elif miturno == 2:
         actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,estado,turno,miturno)
-    while game == True:
+    while not jugador1gana and not jugador2gana:
         fin_de_turno = False
         if turno == miturno:
             if miturno == 1:
@@ -670,9 +673,11 @@ def juego():
                 j2_listo = partida[2]["j2_listo"]
                 barcosj1 = partida[0]["lista barcos"]
                 barcosj2 = partida[1]["lista barcos"]
+                jugador1gana = partida[2]["jugador1gana"]
+                jugador2gana = partida[2]["jugador2gana"]
                 partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                             "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
-                            "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}}
+                            "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}
                 convertir_a_caracteres(j1_tablerodisparos)
                 convertir_a_caracteres(j1_tablerobarcos)
                 convertir_a_caracteres(j2_tablerodisparos)
@@ -862,9 +867,11 @@ def juego():
                 j2_listo = partida[2]["j2_listo"]
                 barcosj1 = partida[0]["lista barcos"]
                 barcosj2 = partida[1]["lista barcos"]
+                jugador1gana = partida[2]["jugador1gana"]
+                jugador2gana = partida[2]["jugador2gana"]
                 partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                             "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
-                            "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo}}
+                            "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}
                 convertir_a_caracteres(j1_tablerodisparos)
                 convertir_a_caracteres(j1_tablerobarcos)
                 convertir_a_caracteres(j2_tablerodisparos)
@@ -881,8 +888,7 @@ def juego():
                 radar_aux = 0
         radar +=0.1
         clock.tick(24)
-equipo = ["Diaz, German Ezequiel", "Nuñez Gagliano, Francisco Dario", "Ragagnin, Nicolas",
-          "Salas, Agustin Ezequiel", "Sandoval, Marianella Jazmín", "Trimarco, Tomas"]
+    revancha()
 
 def revancha():
     cursor.hide()
@@ -902,10 +908,10 @@ def revancha():
         os.system("cls")
         if op == 0:
             print("\033[9;70H\033[104m Revancha \033[0m")
-            print("\033[10;70H Rendirse ")
+            print("\033[10;70H Salir ")
         elif op == 1:
             print("\033[9;70H Revancha ")
-            print("\033[10;70H\033[104m Rendirse \033[0m")
+            print("\033[10;70H\033[104m Salir \033[0m")
         if keyboard.is_pressed('w'):
             if presionado == False:
                 if op-1 != -1:
@@ -927,4 +933,3 @@ def revancha():
             presionado = True
         else:
             presionado = False
-revancha()
