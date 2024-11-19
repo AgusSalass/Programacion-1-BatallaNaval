@@ -7,6 +7,7 @@ import json
 import re
 import socket
 import time
+import msvcrt
 
 def leer_archivo():
 	try:
@@ -30,7 +31,7 @@ def log_in(usuario, diccionario_usuarios):
             bucle = -1
         while contrasena != diccionario_usuarios[usuario]["contrasena"] and bucle != -1:
             os.system("cls")
-            print("Contrasena incorrecta")
+            print("Contraseña incorrecta")
             contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
             if contrasena == "-1":
                 bucle = -1
@@ -38,9 +39,12 @@ def log_in(usuario, diccionario_usuarios):
         if contrasena != "-1":
             print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
             input()
+            return usuario
     else:
+        usuario = "None"
         print("Nombre de usuario no existente. Presione 'Enter' para continuar: ")
         input()
+        return usuario
 
 def sign_up(usuario, diccionario_usuarios):
     if usuario in diccionario_usuarios:
@@ -81,22 +85,32 @@ def sign_up(usuario, diccionario_usuarios):
         contenido.close()
         print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
         input()
+        return usuario
     except TypeError:
         print(TypeError)
         print("Error de grabado")
 
 def mostrar_leaderboard(diccionario_usuarios):
-     os.system("cls")
-     tuplas_usuarios = []
-     print("\n\t\t\tTABLERO DE PUNTUACIONES")
-     print("\t\t\t-------------------------")
-     for usuario in diccionario_usuarios:
+    os.system("cls")
+    tuplas_usuarios = []
+    print("\033[1;25H:::        ::::::::::     :::     :::::::::  :::::::::: :::::::::  :::::::::   ::::::::      :::     :::::::::  :::::::::")
+    print("\033[2;25H:+:        :+:          :+: :+:   :+:    :+: :+:        :+:    :+: :+:    :+: :+:    :+:   :+: :+:   :+:    :+: :+:    :+:")
+    print("\033[3;25H+:+        +:+         +:+   +:+  +:+    +:+ +:+        +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+  +:+    +:+ +:+    +:+")
+    print("\033[4;25H+#+        +#++:++#   +#++:++#++: +#+    +:+ +#++:++#   +#++:++#:  +#++:++#+  +#+    +:+ +#++:++#++: +#++:++#:  +#+    +:+")
+    print("\033[5;25H+#+        +#+        +#+     +#+ +#+    +#+ +#+        +#+    +#+ +#+    +#+ +#+    +#+ +#+     +#+ +#+    +#+ +#+    +#+")
+    print("\033[6;25H#+#        #+#        #+#     #+# #+#    #+# #+#        #+#    #+# #+#    #+# #+#    #+# #+#     #+# #+#    #+# #+#    #+#")
+    print("\033[7;25H########## ########## ###     ### #########  ########## ###    ### #########   ########  ###     ### ###    ### #########")
+    for usuario in diccionario_usuarios:
         puntaje = diccionario_usuarios[usuario]["puntaje"]
         alias = diccionario_usuarios[usuario]["alias"]
         tuplas_usuarios.append((puntaje, alias))
-        tuplas_usuarios = sorted(tuplas_usuarios, reverse = True)
-     for puntaje, usuario in tuplas_usuarios[:10]:
-        print(f"\t\t\t{usuario}: {puntaje}")
+    tuplas_usuarios = sorted(tuplas_usuarios, reverse=True)
+    num = "9"
+    for puntaje, usuario in tuplas_usuarios[:10]:
+        print(f"\033[{num};80H{usuario}: {puntaje}")
+        num = int(num)
+        num += 1
+        num = str(num)
 
 def mostrar_equipo():
     os.system("cls")
@@ -109,7 +123,7 @@ def mostrar_equipo():
 
 def mostrar_proyecto():
     os.system("cls")
-    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
+    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.")
 
 def mostrar_instrucciones():
     os.system("cls")
@@ -132,11 +146,11 @@ def menu():
                 "⠘⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃",
                 "⠀⠛⠁⠀⠀⠉⠙⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠁"]
     x = 0
+    cuenta = "None"
     pygame.init()
     clock = pygame.time.Clock()
     presionado = True
     while repetir:
-        # print("░"*4865)
         print("\033[0;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         print("\033[1;25H█████▄░▄████▄░████████░▄████▄░██░░░░░██░░░░░▄████▄░░░██████▄░▄████▄░██░░░██░▄████▄░██░░░░")
         print("\033[2;25H██░░██░██░░██░░░░██░░░░██░░██░██░░░░░██░░░░░██░░██░░░██░░░██░██░░██░██░░░██░██░░██░██░░░░")
@@ -144,6 +158,7 @@ def menu():
         print("\033[4;25H██░░██░██████░░░░██░░░░██████░██░░░░░██░░░░░██████░░░██░░░██░██████░██░░██░░██████░██░░░░")
         print("\033[5;25H█████▀░██░░██░░░░██░░░░██░░██░██████░██████░██░░██░░░██░░░██░██░░██░▀███▀░░░██░░██░██████")
         print("\033[6;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        print(f"\033[25;60H Usuario: {cuenta}")
         y = 7
         for i in range(len(submarino)):
             print(f"\033[{int(y+i)};{int(x)}H{submarino[i]}")
@@ -237,19 +252,17 @@ def menu():
             presionado = True
         elif keyboard.is_pressed('e'):
             if presionado == False:
+                while msvcrt.kbhit():
+                    msvcrt.getch()
                 if op == 0:
                     repetir = False
                     juego()
                 elif op == 1:
                     os.system("cls")
-                    input("Presione 'Enter' para continuar: ")
-                    os.system("cls")
                     nuevo_usuario = str(input("Ingrese su nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     usuarios = leer_archivo()
-                    log_in(nuevo_usuario, usuarios)   
+                    cuenta = log_in(nuevo_usuario, usuarios)   
                 elif op == 2:
-                    os.system("cls")
-                    input("Presione 'Enter' para continuar: ")
                     os.system("cls")
                     nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario):
@@ -257,7 +270,7 @@ def menu():
                         print("Nombre de usuario invalido")
                         nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     usuarios = leer_archivo()
-                    sign_up(nuevo_usuario, usuarios)
+                    cuenta = sign_up(nuevo_usuario, usuarios)
                 elif op == 3:
                     usuarios = leer_archivo()
                     mostrar_leaderboard(usuarios)
@@ -439,10 +452,14 @@ def visualizar_disparos(disparo,tablero_disparos,bombas_dadas,bombas_falladas,tu
         tablero_disparos[disparo[0]][disparo[1]] = "\033[37m ¤\033[0m"
 
 def dibujar_radar(i):
-    o = (f"\033[32m ▓\033[0m") #main
-    p = (f"\033[32m ░\033[0m") #estela 1
-    l= (f"\033[32m ▒\033[0m")  #estela 2
-    m = (f"\033[32m ~\033[0m") #guiones
+    '''luz principal'''
+    o = (f"\033[32m ▓\033[0m")
+    '''estela 1'''
+    p = (f"\033[32m ░\033[0m")
+    '''estela 2'''
+    l= (f"\033[32m ▒\033[0m")
+    '''guiones'''
+    m = (f"\033[32m ~\033[0m")
     radar0=f"   {m}{p}{m}  \n {m}{m}{l}{l}{m} \n {m}{m}{o}{o}{o} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
     radar1=f"   {m}{m}{m}  \n {m}{m}{p}{p}{m} \n {m}{m}{o}{l}{l} \n {m}{m}{m}{o}{m} \n   {m}{m}{m}"
     radar2=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{p}{p} \n {m}{m}{o}{l}{m} \n   {m}{o}{m}"
@@ -516,20 +533,28 @@ def disparo(bomba,tiros_dados,confirmado,tiros_fallados,tablerodisparos,tablerob
     return confirmado
     
 def esperar_conex():
-    # Create a socket object
+    '''
+    crea un objeto socket
+    '''
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Define the server address and port
+    '''
+    define la direccion y el puerto del server
+    '''
     server_address = ('192.168.191.52', 8080)
 
-    # Connect to the server
+    '''
+    conecta al servidor
+    '''
     client_socket.connect(server_address)
     print("Connected to the server.")
     
     return client_socket
 
 def  enviar_mensaje(client_socket, mensaje, arch_tab):
-    # Send the message to the server
+    '''
+    envia los datos al servidor
+    '''
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
     data=data+"FinDeMensaje"
     try:
@@ -564,8 +589,12 @@ def juego():
     arch_tab = os.path.join(path_tableros, f"Tableros.json")
     o = "\033[36m ~\033[0m"
     b = "\033[90m ≡\033[0m"
-    # ░≡¤
-
+    '''
+    ░: caracter de disparo errado
+    ≡: caracter de barco
+    ¤: caracter de disparo pegado
+    ~: caracter de agua
+    '''
     j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -634,6 +663,7 @@ def juego():
     jugador1gana = False
     jugador2gana = False
     radar_aux = 0
+    cuenta = "None"
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
                "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}
@@ -785,6 +815,8 @@ def juego():
                 presionado = True
             elif keyboard.is_pressed('e'):
                 if presionado == False:
+                    while msvcrt.kbhit():
+                        msvcrt.getch()
                     if estado == "posicionar barcos":
                         if miturno == 1:
                             num_barco = confirmar_barco(barcosj1,num_barco, partida, arch_tab,j1_tablerobarcos,j1_tablerodisparos,j2_tablerobarcos,j2_tablerodisparos)
@@ -859,7 +891,6 @@ def juego():
                 actualizar_pantalla(barcosj1,j1_tablerobarcos,pos_bomba,j1_tablerodisparos,tirosj1_dados,radar,tirosj1_fallados,estado,turno,miturno)
             elif miturno == 2:
                 actualizar_pantalla(barcosj2,j2_tablerobarcos,pos_bomba,j2_tablerodisparos,tirosj2_dados,radar,tirosj2_fallados,estado,turno,miturno)
-            time.sleep(0.25)
             mensaje = recibir_mensaje(conexion)
             if mensaje:
                 contenido = open(arch_tab, "w")
@@ -896,14 +927,40 @@ def juego():
                 radar_aux = 0
         radar +=0.1
         clock.tick(24)
-    revancha()
+    revancha(jugador1gana,jugador2gana,cuenta)
 
-def revancha():
+def revancha(jugador1gana,jugador2gana,cuenta):
     cursor.hide()
     repetir = True
     op = 0
     pygame.init()
     clock = pygame.time.Clock()
+    if jugador1gana and cuenta != "None":
+        diccionario_usuarios = leer_archivo()
+        diccionario_usuarios[cuenta]["puntaje"] += 1
+        usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+        try:
+            path_archivo = os.path.dirname(os.path.abspath(__file__))
+            arch_dic = os.path.join(path_archivo, "Usuarios.json")
+            contenido = open(arch_dic, "w")
+            contenido.write(usuarios_JSON)
+            contenido.close()
+        except TypeError:
+            print(TypeError)
+            print("Error de grabado")
+    elif jugador2gana and cuenta != "None":
+        diccionario_usuarios = leer_archivo()
+        diccionario_usuarios[cuenta]["puntaje"] += 1
+        usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+        try:
+            path_archivo = os.path.dirname(os.path.abspath(__file__))
+            arch_dic = os.path.join(path_archivo, "Usuarios.json")
+            contenido = open(arch_dic, "w")
+            contenido.write(usuarios_JSON)
+            contenido.close()
+        except TypeError:
+            print(TypeError)
+            print("Error de grabado")
     while repetir:
         print("\033[1;25H      ::::::::      :::       :::   :::   ::::::::::          ::::::::  :::     ::: :::::::::: ::::::::: ")
         print("\033[2;25H    :+:    :+:   :+: :+:    :+:+: :+:+:  :+:                :+:    :+: :+:     :+: :+:        :+:    :+: ")
@@ -931,6 +988,8 @@ def revancha():
                     op += 1
             presionado = True
         elif keyboard.is_pressed('e'):
+            while msvcrt.kbhit():
+                msvcrt.getch()
             if presionado == False:
                 if op == 0:
                     repetir = False
