@@ -22,19 +22,30 @@ def leer_archivo():
 		print(TypeError)
 		print("Error de lectura")
 
+def escribir_archivo(usuarios_JSON):
+    try:
+        path_archivo = os.path.dirname(os.path.abspath(__file__))
+        arch_dic = os.path.join(path_archivo, "Usuarios.json")
+        contenido = open(arch_dic, "w")
+        contenido.write(usuarios_JSON)
+        contenido.close()
+    except TypeError:
+        print(TypeError)
+        print("Error de grabado")
+
 def log_in(usuario, diccionario_usuarios):
     bucle = True
     os.system("cls")
     if usuario in diccionario_usuarios:
         contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
         if contrasena == "-1":
-            bucle = -1
-        while contrasena != diccionario_usuarios[usuario]["contrasena"] and bucle != -1:
+            bucle = False
+        while contrasena != diccionario_usuarios[usuario]["contrasena"] and bucle:
             os.system("cls")
             print("Contraseña incorrecta")
             contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
             if contrasena == "-1":
-                bucle = -1
+                bucle = False
         os.system("cls")
         if contrasena != "-1":
             print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
@@ -47,48 +58,37 @@ def log_in(usuario, diccionario_usuarios):
         return usuario
 
 def sign_up(usuario, diccionario_usuarios):
-    if usuario in diccionario_usuarios:
-        while usuario in diccionario_usuarios:
-            os.system("cls")
-            print("Nombre de usuario ya existente")
-            usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
-            while not re.match("^[a-zA-Z0-9]{5,12}$", usuario):
-                os.system("cls")
-                print("Nombre de usuario invalido")
-                usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
     os.system("cls")
-    alias = str(input("Ingrese un alias (3 Caracteres, solo letras): ")).upper()
-    while not re.match("^[A-Z]{3}$", alias):
-        os.system("cls")
-        print("Alias invalido")
+    if usuario not in diccionario_usuarios:
         alias = str(input("Ingrese un alias (3 Caracteres, solo letras): ")).upper()
-    os.system("cls")
-    contrasena = str(input("Ingrese una contraseña (5-12 Caracteres, solo letras y numeros): "))
-    while not re.match("^[a-zA-Z0-9]{5,12}$", contrasena):
+        while not re.match("^[A-Z]{3}$", alias):
+            os.system("cls")
+            print("Alias invalido")
+            alias = str(input("Ingrese un alias (3 Caracteres, solo letras): ")).upper()
         os.system("cls")
-        print("Contraseña invalida")
         contrasena = str(input("Ingrese una contraseña (5-12 Caracteres, solo letras y numeros): "))
-    os.system("cls")
+        while not re.match("^[a-zA-Z0-9]{5,12}$", contrasena):
+            os.system("cls")
+            print("Contraseña invalida")
+            contrasena = str(input("Ingrese una contraseña (5-12 Caracteres, solo letras y numeros): "))
+        os.system("cls")
 
-    diccionario_usuarios[usuario] = {
-        "alias": alias,
-        "contrasena": contrasena,
-        "puntaje": 0
-    }
-    
-    usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
-    try:
-        path_archivo = os.path.dirname(os.path.abspath(__file__))
-        arch_dic = os.path.join(path_archivo, "Usuarios.json")
-        contenido = open(arch_dic, "w")
-        contenido.write(usuarios_JSON)
-        contenido.close()
+        diccionario_usuarios[usuario] = {
+            "alias": alias,
+            "contrasena": contrasena,
+            "puntaje": 0
+        }
+        
+        usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+        escribir_archivo(usuarios_JSON)
         print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
         input()
         return usuario
-    except TypeError:
-        print(TypeError)
-        print("Error de grabado")
+    else:
+        usuario = "None"
+        print("Nombre de usuario ya existente. Presione 'Enter' para continuar: ")
+        input()
+        return usuario
 
 def mostrar_leaderboard(diccionario_usuarios):
     os.system("cls")
@@ -264,13 +264,19 @@ def menu():
                     cuenta = log_in(nuevo_usuario, usuarios)   
                 elif op == 2:
                     os.system("cls")
-                    nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
-                    while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario):
+                    bucle = True
+                    nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
+                    if nuevo_usuario == "-1":
+                        bucle = False
+                    while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario) and bucle:
                         os.system("cls")
                         print("Nombre de usuario invalido")
-                        nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
-                    usuarios = leer_archivo()
-                    cuenta = sign_up(nuevo_usuario, usuarios)
+                        nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
+                        if nuevo_usuario == "-1":
+                            bucle = False
+                    if nuevo_usuario != "-1":
+                        usuarios = leer_archivo()
+                        cuenta = sign_up(nuevo_usuario, usuarios)
                 elif op == 3:
                     usuarios = leer_archivo()
                     mostrar_leaderboard(usuarios)
@@ -926,40 +932,24 @@ def juego(cuenta):
                 radar_aux = 0
         radar +=0.1
         clock.tick(24)
-    revancha(jugador1gana,jugador2gana,cuenta)
+    revancha(jugador1gana, jugador2gana, cuenta, miturno)
 
-def revancha(jugador1gana,jugador2gana,cuenta):
+def revancha(jugador1gana, jugador2gana, cuenta, miturno):
     cursor.hide()
     repetir = True
     op = 0
     pygame.init()
     clock = pygame.time.Clock()
-    if jugador1gana and cuenta != "None":
+    if jugador1gana and cuenta != "None" and miturno == 1:
         diccionario_usuarios = leer_archivo()
         diccionario_usuarios[cuenta]["puntaje"] += 1
         usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
-        try:
-            path_archivo = os.path.dirname(os.path.abspath(__file__))
-            arch_dic = os.path.join(path_archivo, "Usuarios.json")
-            contenido = open(arch_dic, "w")
-            contenido.write(usuarios_JSON)
-            contenido.close()
-        except TypeError:
-            print(TypeError)
-            print("Error de grabado")
-    elif jugador2gana and cuenta != "None":
+        escribir_archivo(usuarios_JSON)
+    elif jugador2gana and cuenta != "None" and miturno == 2:
         diccionario_usuarios = leer_archivo()
         diccionario_usuarios[cuenta]["puntaje"] += 1
         usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
-        try:
-            path_archivo = os.path.dirname(os.path.abspath(__file__))
-            arch_dic = os.path.join(path_archivo, "Usuarios.json")
-            contenido = open(arch_dic, "w")
-            contenido.write(usuarios_JSON)
-            contenido.close()
-        except TypeError:
-            print(TypeError)
-            print("Error de grabado")
+        escribir_archivo(usuarios_JSON)
     while repetir:
         print("\033[1;25H      ::::::::      :::       :::   :::   ::::::::::          ::::::::  :::     ::: :::::::::: ::::::::: ")
         print("\033[2;25H    :+:    :+:   :+: :+:    :+:+: :+:+:  :+:                :+:    :+: :+:     :+: :+:        :+:    :+: ")
