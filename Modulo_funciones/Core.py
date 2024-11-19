@@ -256,7 +256,7 @@ def menu():
                     msvcrt.getch()
                 if op == 0:
                     repetir = False
-                    juego()
+                    juego(cuenta)
                 elif op == 1:
                     os.system("cls")
                     nuevo_usuario = str(input("Ingrese su nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
@@ -541,7 +541,7 @@ def esperar_conex():
     '''
     define la direccion y el puerto del server
     '''
-    server_address = ('192.168.191.52', 8080)
+    server_address = ('192.168.60.114', 8080)
 
     '''
     conecta al servidor
@@ -580,7 +580,7 @@ def recibir_mensaje(client_socket):
         print(socket.herror)
     return data
 
-def juego():
+def juego(cuenta):
     conexion = esperar_conex()
     cursor.hide()
     pygame.init()
@@ -654,7 +654,7 @@ def juego():
     pos_bomba = (1,1)
     radar = 0
     turno = 1
-    miturno = 2
+    miturno = 1
     estado = "posicionar barcos"
     confirmado = True
     presionado = True
@@ -663,7 +663,6 @@ def juego():
     jugador1gana = False
     jugador2gana = False
     radar_aux = 0
-    cuenta = "None"
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
                "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}

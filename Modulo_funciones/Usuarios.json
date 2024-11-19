@@ -2,7 +2,8 @@
     "nicolas": {
         "alias": "NIC",
         "contrasena": "nicolas",
-        "puntaje": 0    },
+        "puntaje": 0
+    },
     "marian": {
         "alias": "MAR",
         "contrasena": "marian",
@@ -27,5 +28,10 @@
         "alias": "TOM",
         "contrasena": "tomas",
         "puntaje": 5
+    },
+    "Franchu": {
+        "alias": "FNG",
+        "contrasena": "mishubishi",
+        "puntaje": 0
     }
 }
