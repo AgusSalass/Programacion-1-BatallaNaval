@@ -123,7 +123,7 @@ def mostrar_equipo():
 
 def mostrar_proyecto():
     os.system("cls")
-    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.") #TODO revisar esta funcion
+    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.")
 
 def mostrar_instrucciones():
     os.system("cls")
@@ -151,7 +151,6 @@ def menu():
     clock = pygame.time.Clock()
     presionado = True
     while repetir:
-        # print("░"*4865)
         print("\033[0;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         print("\033[1;25H█████▄░▄████▄░████████░▄████▄░██░░░░░██░░░░░▄████▄░░░██████▄░▄████▄░██░░░██░▄████▄░██░░░░")
         print("\033[2;25H██░░██░██░░██░░░░██░░░░██░░██░██░░░░░██░░░░░██░░██░░░██░░░██░██░░██░██░░░██░██░░██░██░░░░")
@@ -453,10 +452,14 @@ def visualizar_disparos(disparo,tablero_disparos,bombas_dadas,bombas_falladas,tu
         tablero_disparos[disparo[0]][disparo[1]] = "\033[37m ¤\033[0m"
 
 def dibujar_radar(i):
-    o = (f"\033[32m ▓\033[0m") #main
-    p = (f"\033[32m ░\033[0m") #estela 1
-    l= (f"\033[32m ▒\033[0m")  #estela 2
-    m = (f"\033[32m ~\033[0m") #guiones
+    '''luz principal'''
+    o = (f"\033[32m ▓\033[0m")
+    '''estela 1'''
+    p = (f"\033[32m ░\033[0m")
+    '''estela 2'''
+    l= (f"\033[32m ▒\033[0m")
+    '''guiones'''
+    m = (f"\033[32m ~\033[0m")
     radar0=f"   {m}{p}{m}  \n {m}{m}{l}{l}{m} \n {m}{m}{o}{o}{o} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
     radar1=f"   {m}{m}{m}  \n {m}{m}{p}{p}{m} \n {m}{m}{o}{l}{l} \n {m}{m}{m}{o}{m} \n   {m}{m}{m}"
     radar2=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{p}{p} \n {m}{m}{o}{l}{m} \n   {m}{o}{m}"
@@ -530,20 +533,28 @@ def disparo(bomba,tiros_dados,confirmado,tiros_fallados,tablerodisparos,tablerob
     return confirmado
     
 def esperar_conex():
-    # Create a socket object
+    '''
+    crea un objeto socket
+    '''
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Define the server address and port
+    '''
+    define la direccion y el puerto del server
+    '''
     server_address = ('192.168.191.52', 8080)
 
-    # Connect to the server
+    '''
+    conecta al servidor
+    '''
     client_socket.connect(server_address)
     print("Connected to the server.")
     
     return client_socket
 
 def  enviar_mensaje(client_socket, mensaje, arch_tab):
-    # Send the message to the server
+    '''
+    envia los datos al servidor
+    '''
     data = json.dumps((mensaje["Jugador 1"], mensaje["Jugador 2"], mensaje["Datos"]))
     data=data+"FinDeMensaje"
     try:
@@ -578,8 +589,12 @@ def juego():
     arch_tab = os.path.join(path_tableros, f"Tableros.json")
     o = "\033[36m ~\033[0m"
     b = "\033[90m ≡\033[0m"
-    # ░≡¤
-
+    '''
+    ░: caracter de disparo errado
+    ≡: caracter de barco
+    ¤: caracter de disparo pegado
+    ~: caracter de agua
+    '''
     j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
@@ -648,6 +663,7 @@ def juego():
     jugador1gana = False
     jugador2gana = False
     radar_aux = 0
+    cuenta = "None"
     partida = {"Jugador 1": {"tablero disparos": j1_tablerodisparos, "tablero barcos": j1_tablerobarcos, "lista barcos": barcosj1}, 
                "Jugador 2": {"tablero disparos": j2_tablerodisparos, "tablero barcos": j2_tablerobarcos, "lista barcos": barcosj2}, 
                "Datos": {"turno": turno, "j1_listo": j1_listo, "j2_listo": j2_listo, "jugador1gana": jugador1gana, "jugador2gana": jugador2gana}}
@@ -911,16 +927,14 @@ def juego():
                 radar_aux = 0
         radar +=0.1
         clock.tick(24)
-    revancha()
+    revancha(jugador1gana,jugador2gana,cuenta)
 
-def revancha():
+def revancha(jugador1gana,jugador2gana,cuenta):
     cursor.hide()
     repetir = True
     op = 0
     pygame.init()
     clock = pygame.time.Clock()
-    global jugador1gana, jugador2gana, cuenta
-    #TODO determinar quien es el usuario que gana
     if jugador1gana and cuenta != "None":
         diccionario_usuarios = leer_archivo()
         diccionario_usuarios[cuenta]["puntaje"] += 1
