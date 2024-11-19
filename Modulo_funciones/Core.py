@@ -7,6 +7,7 @@ import json
 import re
 import socket
 import time
+import msvcrt
 
 def leer_archivo():
 	try:
@@ -30,7 +31,7 @@ def log_in(usuario, diccionario_usuarios):
             bucle = -1
         while contrasena != diccionario_usuarios[usuario]["contrasena"] and bucle != -1:
             os.system("cls")
-            print("Contrasena incorrecta")
+            print("Contraseña incorrecta")
             contrasena = str(input("Ingrese su contraseña (5-12 Caracteres, solo letras y numeros), o -1 para volver a menu: "))
             if contrasena == "-1":
                 bucle = -1
@@ -38,9 +39,12 @@ def log_in(usuario, diccionario_usuarios):
         if contrasena != "-1":
             print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
             input()
+            return usuario
     else:
+        usuario = "None"
         print("Nombre de usuario no existente. Presione 'Enter' para continuar: ")
         input()
+        return usuario
 
 def sign_up(usuario, diccionario_usuarios):
     if usuario in diccionario_usuarios:
@@ -81,22 +85,32 @@ def sign_up(usuario, diccionario_usuarios):
         contenido.close()
         print("Bienvenido", usuario, ". Presione 'Enter' para continuar: ")
         input()
+        return usuario
     except TypeError:
         print(TypeError)
         print("Error de grabado")
 
 def mostrar_leaderboard(diccionario_usuarios):
-     os.system("cls")
-     tuplas_usuarios = []
-     print("\n\t\t\tTABLERO DE PUNTUACIONES")
-     print("\t\t\t-------------------------")
-     for usuario in diccionario_usuarios:
+    os.system("cls")
+    tuplas_usuarios = []
+    print("\033[1;25H:::        ::::::::::     :::     :::::::::  :::::::::: :::::::::  :::::::::   ::::::::      :::     :::::::::  :::::::::")
+    print("\033[2;25H:+:        :+:          :+: :+:   :+:    :+: :+:        :+:    :+: :+:    :+: :+:    :+:   :+: :+:   :+:    :+: :+:    :+:")
+    print("\033[3;25H+:+        +:+         +:+   +:+  +:+    +:+ +:+        +:+    +:+ +:+    +:+ +:+    +:+  +:+   +:+  +:+    +:+ +:+    +:+")
+    print("\033[4;25H+#+        +#++:++#   +#++:++#++: +#+    +:+ +#++:++#   +#++:++#:  +#++:++#+  +#+    +:+ +#++:++#++: +#++:++#:  +#+    +:+")
+    print("\033[5;25H+#+        +#+        +#+     +#+ +#+    +#+ +#+        +#+    +#+ +#+    +#+ +#+    +#+ +#+     +#+ +#+    +#+ +#+    +#+")
+    print("\033[6;25H#+#        #+#        #+#     #+# #+#    #+# #+#        #+#    #+# #+#    #+# #+#    #+# #+#     #+# #+#    #+# #+#    #+#")
+    print("\033[7;25H########## ########## ###     ### #########  ########## ###    ### #########   ########  ###     ### ###    ### #########")
+    for usuario in diccionario_usuarios:
         puntaje = diccionario_usuarios[usuario]["puntaje"]
         alias = diccionario_usuarios[usuario]["alias"]
         tuplas_usuarios.append((puntaje, alias))
-        tuplas_usuarios = sorted(tuplas_usuarios, reverse = True)
-     for puntaje, usuario in tuplas_usuarios[:10]:
-        print(f"\t\t\t{usuario}: {puntaje}")
+    tuplas_usuarios = sorted(tuplas_usuarios, reverse=True)
+    num = "9"
+    for puntaje, usuario in tuplas_usuarios[:10]:
+        print(f"\033[{num};80H{usuario}: {puntaje}")
+        num = int(num)
+        num += 1
+        num = str(num)
 
 def mostrar_equipo():
     os.system("cls")
@@ -132,6 +146,7 @@ def menu():
                 "⠘⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃",
                 "⠀⠛⠁⠀⠀⠉⠙⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠁"]
     x = 0
+    cuenta = "None"
     pygame.init()
     clock = pygame.time.Clock()
     presionado = True
@@ -144,6 +159,7 @@ def menu():
         print("\033[4;25H██░░██░██████░░░░██░░░░██████░██░░░░░██░░░░░██████░░░██░░░██░██████░██░░██░░██████░██░░░░")
         print("\033[5;25H█████▀░██░░██░░░░██░░░░██░░██░██████░██████░██░░██░░░██░░░██░██░░██░▀███▀░░░██░░██░██████")
         print("\033[6;25H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        print(f"\033[25;60H Usuario: {cuenta}")
         y = 7
         for i in range(len(submarino)):
             print(f"\033[{int(y+i)};{int(x)}H{submarino[i]}")
@@ -237,19 +253,17 @@ def menu():
             presionado = True
         elif keyboard.is_pressed('e'):
             if presionado == False:
+                while msvcrt.kbhit():
+                    msvcrt.getch()
                 if op == 0:
                     repetir = False
                     juego()
                 elif op == 1:
                     os.system("cls")
-                    input("Presione 'Enter' para continuar: ")
-                    os.system("cls")
                     nuevo_usuario = str(input("Ingrese su nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     usuarios = leer_archivo()
-                    log_in(nuevo_usuario, usuarios)   
+                    cuenta = log_in(nuevo_usuario, usuarios)   
                 elif op == 2:
-                    os.system("cls")
-                    input("Presione 'Enter' para continuar: ")
                     os.system("cls")
                     nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     while not re.match("^[a-zA-Z0-9]{5,12}$", nuevo_usuario):
@@ -257,7 +271,7 @@ def menu():
                         print("Nombre de usuario invalido")
                         nuevo_usuario = str(input("Ingrese un nombre de usuario (5-12 Caracteres, solo letras y numeros): "))
                     usuarios = leer_archivo()
-                    sign_up(nuevo_usuario, usuarios)
+                    cuenta = sign_up(nuevo_usuario, usuarios)
                 elif op == 3:
                     usuarios = leer_archivo()
                     mostrar_leaderboard(usuarios)
@@ -785,6 +799,8 @@ def juego():
                 presionado = True
             elif keyboard.is_pressed('e'):
                 if presionado == False:
+                    while msvcrt.kbhit():
+                        msvcrt.getch()
                     if estado == "posicionar barcos":
                         if miturno == 1:
                             num_barco = confirmar_barco(barcosj1,num_barco, partida, arch_tab,j1_tablerobarcos,j1_tablerodisparos,j2_tablerobarcos,j2_tablerodisparos)
@@ -903,6 +919,34 @@ def revancha():
     op = 0
     pygame.init()
     clock = pygame.time.Clock()
+    global jugador1gana, jugador2gana, cuenta
+    #TODO determinar quien es el usuario que gana
+    if jugador1gana and cuenta != "None":
+        diccionario_usuarios = leer_archivo()
+        diccionario_usuarios[cuenta]["puntaje"] += 1
+        usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+        try:
+            path_archivo = os.path.dirname(os.path.abspath(__file__))
+            arch_dic = os.path.join(path_archivo, "Usuarios.json")
+            contenido = open(arch_dic, "w")
+            contenido.write(usuarios_JSON)
+            contenido.close()
+        except TypeError:
+            print(TypeError)
+            print("Error de grabado")
+    elif jugador2gana and cuenta != "None":
+        diccionario_usuarios = leer_archivo()
+        diccionario_usuarios[cuenta]["puntaje"] += 1
+        usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
+        try:
+            path_archivo = os.path.dirname(os.path.abspath(__file__))
+            arch_dic = os.path.join(path_archivo, "Usuarios.json")
+            contenido = open(arch_dic, "w")
+            contenido.write(usuarios_JSON)
+            contenido.close()
+        except TypeError:
+            print(TypeError)
+            print("Error de grabado")
     while repetir:
         print("\033[1;25H      ::::::::      :::       :::   :::   ::::::::::          ::::::::  :::     ::: :::::::::: ::::::::: ")
         print("\033[2;25H    :+:    :+:   :+: :+:    :+:+: :+:+:  :+:                :+:    :+: :+:     :+: :+:        :+:    :+: ")
@@ -930,6 +974,8 @@ def revancha():
                     op += 1
             presionado = True
         elif keyboard.is_pressed('e'):
+            while msvcrt.kbhit():
+                msvcrt.getch()
             if presionado == False:
                 if op == 0:
                     repetir = False
