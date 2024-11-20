@@ -123,7 +123,12 @@ def mostrar_equipo():
 
 def mostrar_proyecto():
     os.system("cls")
-    print("Nuestro proyecto se trata sobre el juego de mesa Batalla Naval:\n El mismo será realizado usando un formato via terminal en ASCII, y contará \n con un modo multijugador en linea, en el cual cada jugador podrá \n colocar a libertad sus barcos, bombardear el lado enemigo del tablero, y recibir \n feedback en tiempo real de los resultados de sus acciones en una partida por turnos.")
+    path_proyecto = os.path.dirname(os.path.abspath(__file__))
+    archivo = os.path.join(path_proyecto, f"El Proyecto.txt")
+    proyecto = open(archivo,"r", encoding="utf8")
+    proyec= proyecto.read()
+    print (proyec)
+    proyecto.close()
 
 def mostrar_instrucciones():
     os.system("cls")
