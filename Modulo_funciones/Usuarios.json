@@ -33,5 +33,15 @@
         "alias": "FNG",
         "contrasena": "mishubishi",
         "puntaje": 0
+    },
+    "luisss": {
+        "alias": "LUI",
+        "contrasena": "12345",
+        "puntaje": 1
+    },
+    "jesus": {
+        "alias": "JES",
+        "contrasena": "12345",
+        "puntaje": 0
     }
 }

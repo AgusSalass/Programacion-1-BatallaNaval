@@ -300,32 +300,35 @@ def menu():
             presionado = True
         else:
             presionado = False
-def dibujar(tablero):
-    for fila in tablero:
-        for columna in fila:
-            print(columna,end="")
-        print()
+def dibujar(tablero,y):
+    for fila in range(len(tablero)):
+        x = 60
+        for columna in range(len(tablero[fila])):
+            print(f"\033[{y};{x}H{tablero[fila][columna]}")
+            x += 2
+        y += 1
+    return y
         
 def convertir_a_numero(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
-            if "\033[36m ~\033[0m" == tablero[i][j]:
+            if "\033[36m~ \033[0m" == tablero[i][j]:
                 tablero[i][j] = "3"
-            elif "\033[31m ¤\033[0m" == tablero[i][j]:
+            elif "\033[31m¤ \033[0m" == tablero[i][j]:
                 tablero[i][j] = "2"
-            elif "\033[90m ≡\033[0m" == tablero[i][j]:
+            elif "\033[90m≡ \033[0m" == tablero[i][j]:
                 tablero[i][j] = "%"
             elif "══" == tablero[i][j]:
                 tablero[i][j] = "4"
             elif "═╣" == tablero[i][j]:
                 tablero[i][j] = "5"
-            elif "╔" == tablero[i][j]:
+            elif "╔═" == tablero[i][j]:
                 tablero[i][j] = "6"
             elif  "═╗" == tablero[i][j]:
                 tablero[i][j] = "7"
-            elif "╚" == tablero[i][j]:
+            elif "╚═" == tablero[i][j]:
                 tablero[i][j] = "8"
-            elif "╠" == tablero[i][j]:
+            elif "╠═" == tablero[i][j]:
                 tablero[i][j] = "9"
             elif "═╝" == tablero[i][j]:
                 tablero[i][j] = "$"
@@ -340,31 +343,31 @@ def convertir_a_caracteres(tablero):
     for i in range(len(tablero)):
         for j in range(len(tablero[i])):
             if "3" == tablero[i][j]:
-                tablero[i][j] = "\033[36m ~\033[0m"
+                tablero[i][j] = "\033[36m~ \033[0m"
             elif "%" == tablero[i][j]:
-                tablero[i][j] = "\033[90m ≡\033[0m"
+                tablero[i][j] = "\033[90m≡ \033[0m"
             elif "2" == tablero[i][j]:
-                tablero[i][j] = "\033[31m ¤\033[0m"
+                tablero[i][j] = "\033[31m¤ \033[0m"
             elif "4" == tablero[i][j]:
                 tablero[i][j] = "══"
             elif "5" == tablero[i][j]:
-                tablero[i][j] = "═╣"
+                tablero[i][j] = "╣"
             elif "6" == tablero[i][j]:
-                tablero[i][j] = "╔"
+                tablero[i][j] = "╔═"
             elif "7" == tablero[i][j]:
-                tablero[i][j] = "═╗"
+                tablero[i][j] = "╗"
             elif "8" == tablero[i][j]:
-                tablero[i][j] = "╚"
+                tablero[i][j] = "╚═"
             elif "9" == tablero[i][j]:
-                tablero[i][j] = "╠"
+                tablero[i][j] = "╠═"
             elif "$" == tablero[i][j]:
-                tablero[i][j] = "═╝"
+                tablero[i][j] = "╝"
             elif "#" == tablero[i][j]:
                 tablero[i][j] = "║"
             elif "!" == tablero[i][j]:
                 tablero[i][j] = " ║"
             elif "*" == tablero[i][j]:
-                tablero[i][j] = "\033[97m ░\033[0m"
+                tablero[i][j] = "\033[97m░ \033[0m"
 
 def movimiento_barco(direccion,barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -372,7 +375,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
     for i in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][i]
-            tablero[old_x][old_y] = "\033[36m ~\033[0m"
+            tablero[old_x][old_y] = "\033[36m~ \033[0m"
             x,y = direccion
             new_x = old_x + x
             new_y = old_y + y
@@ -387,7 +390,7 @@ def movimiento_barco(direccion,barcos,barco,tablero):
 def visualizar_barco(barcos,tablero_barcos):
     for barco in barcos:
         for coordenada in barco:
-            tablero_barcos[coordenada[0]][coordenada[1]] = "\033[90m ≡\033[0m"
+            tablero_barcos[coordenada[0]][coordenada[1]] = "\033[90m≡ \033[0m"
             
 def rotacion_a_vertical(barcos,barco,tablero):
     aux = copy.deepcopy(barcos[barco])
@@ -395,7 +398,7 @@ def rotacion_a_vertical(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = "\033[36m ~\033[0m"
+            tablero[old_x][old_y] = "\033[36m~ \033[0m"
             new_x = old_x + coordenada
             new_y = old_y - coordenada
             if new_x < 1 or new_x >= len(tablero)-1 or new_y <= 0 or new_y >= len(tablero)-1:
@@ -410,7 +413,7 @@ def rotacion_a_horizontal(barcos,barco,tablero):
     for coordenada in range(len(barcos[barco])):
         if posible:
             old_x,old_y = barcos[barco][coordenada]
-            tablero[old_x][old_y] = "\033[36m ~\033[0m"
+            tablero[old_x][old_y] = "\033[36m~ \033[0m"
             new_x = old_x - coordenada
             new_y = old_y + coordenada
             if new_x < 1 or new_x >= len(tablero)-1 or new_y <= 0 or new_y  >= len(tablero)-1:
@@ -451,11 +454,11 @@ def confirmar_barco(barcos,barco,partido,arch_tab,tablero1,tablero_disparo1,tabl
 
 def visualizar_disparos(disparo,tablero_disparos,bombas_dadas,bombas_falladas,turno,miturno,estado):
     for coordenada in bombas_dadas:
-        tablero_disparos[coordenada[0]][coordenada[1]] = "\033[31m ¤\033[0m"
+        tablero_disparos[coordenada[0]][coordenada[1]] = "\033[31m¤ \033[0m"
     for coordenada in bombas_falladas:
-        tablero_disparos[coordenada[0]][coordenada[1]] = "\033[97m ░\033[0m"
+        tablero_disparos[coordenada[0]][coordenada[1]] = "\033[97m░ \033[0m"
     if turno == miturno and estado == "posicionar disparos":
-        tablero_disparos[disparo[0]][disparo[1]] = "\033[37m ¤\033[0m"
+        tablero_disparos[disparo[0]][disparo[1]] = "\033[37m¤ \033[0m"
 
 def dibujar_radar(i):
     '''luz principal'''
@@ -466,14 +469,14 @@ def dibujar_radar(i):
     l= (f"\033[32m ▒\033[0m")
     '''guiones'''
     m = (f"\033[32m ~\033[0m")
-    radar0=f"   {m}{p}{m}  \n {m}{m}{l}{l}{m} \n {m}{m}{o}{o}{o} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
-    radar1=f"   {m}{m}{m}  \n {m}{m}{p}{p}{m} \n {m}{m}{o}{l}{l} \n {m}{m}{m}{o}{m} \n   {m}{m}{m}"
-    radar2=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{p}{p} \n {m}{m}{o}{l}{m} \n   {m}{o}{m}"
-    radar3=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {m}{m}{o}{m}{m} \n {m}{o}{l}{p}{m} \n   {m}{l}{m}"
-    radar4=f"   {m}{m}{m}  \n {m}{m}{m}{m}{m} \n {o}{o}{o}{m}{m} \n {m}{l}{p}{m}{m} \n   {m}{p}{m}"
-    radar5=f"   {m}{m}{m}  \n {m}{o}{m}{m}{m} \n {l}{l}{o}{m}{m} \n {m}{p}{m}{m}{m} \n   {m}{m}{m}"
-    radar6=f"   {m}{o}{m}  \n {m}{l}{o}{m}{m} \n {p}{p}{o}{m}{m} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
-    radar7=f"   {m}{l}{m}  \n {m}{p}{l}{o}{m} \n {m}{m}{o}{m}{m} \n {m}{m}{m}{m}{m} \n   {m}{m}{m}"
+    radar0=f"\033[11;47H   {m}{p}{m}  \n \033[12;47H {m}{m}{l}{l}{m} \n \033[13;47H {m}{m}{o}{o}{o} \n \033[14;47H {m}{m}{m}{m}{m} \n \033[15;47H   {m}{m}{m}"
+    radar1=f"\033[11;47H   {m}{m}{m}  \n\033[12;47H {m}{m}{p}{p}{m} \n\033[13;47H {m}{m}{o}{l}{l} \n\033[14;47H {m}{m}{m}{o}{m} \n\033[15;47H   {m}{m}{m}"
+    radar2=f"\033[11;47H   {m}{m}{m}  \n\033[12;47H {m}{m}{m}{m}{m} \n\033[13;47H {m}{m}{o}{p}{p} \n\033[14;47H {m}{m}{o}{l}{m} \n\033[15;47H   {m}{o}{m}"
+    radar3=f"\033[11;47H   {m}{m}{m}  \n\033[12;47H {m}{m}{m}{m}{m} \n\033[13;47H {m}{m}{o}{m}{m} \n\033[14;47H {m}{o}{l}{p}{m} \n\033[15;47H   {m}{l}{m}"
+    radar4=f"\033[11;47H   {m}{m}{m}  \n\033[12;47H {m}{m}{m}{m}{m} \n\033[13;47H {o}{o}{o}{m}{m} \n\033[14;47H {m}{l}{p}{m}{m} \n\033[15;47H   {m}{p}{m}"
+    radar5=f"\033[11;47H   {m}{m}{m}  \n\033[12;47H {m}{o}{m}{m}{m} \n\033[13;47H {l}{l}{o}{m}{m} \n\033[14;47H {m}{p}{m}{m}{m} \n\033[15;47H   {m}{m}{m}"
+    radar6=f"\033[11;47H   {m}{o}{m}  \n\033[12;47H {m}{l}{o}{m}{m} \n\033[13;47H {p}{p}{o}{m}{m} \n\033[14;47H {m}{m}{m}{m}{m} \n\033[15;47H   {m}{m}{m}"
+    radar7=f"\033[11;47H   {m}{l}{m}  \n\033[12;47H {m}{p}{l}{o}{m} \n\033[13;47H {m}{m}{o}{m}{m} \n\033[14;47H {m}{m}{m}{m}{m} \n\033[15;47H   {m}{m}{m}"
     radar = [radar0,radar1,radar2,radar3,radar4,radar5,radar6,radar7]
     print(radar[i])
 
@@ -481,7 +484,7 @@ def movimiento_disparo(direccion,bomba,tablero):
     posible = True
     if posible:
         old_x,old_y = bomba
-        tablero[old_x][old_y] = "\033[36m ~\033[0m"
+        tablero[old_x][old_y] = "\033[36m~ \033[0m"
         x,y = direccion
         new_x = old_x + x
         new_y = old_y + y
@@ -508,12 +511,12 @@ def deteccion_disparo(disparo,tablero_disparo,tablerobarcos):
     x,y = disparo
     encontrado = False
     if  "≡" in tablerobarcos[x][y]:
-        tablero_disparo[x][y] = "\033[31m ¤\033[0m"
-        tablerobarcos[x][y] = "\033[31m ¤\033[0m"
+        tablero_disparo[x][y] = "\033[31m¤ \033[0m"
+        tablerobarcos[x][y] = "\033[31m¤ \033[0m"
         encontrado = True
     else:
-        tablero_disparo[x][y] = "\033[97m ░\033[0m"
-        tablerobarcos[x][y] = "\033[97m ░\033[0m"
+        tablero_disparo[x][y] = "\033[97m░ \033[0m"
+        tablerobarcos[x][y] = "\033[97m░ \033[0m"
     return encontrado
 
 def actualizar_pantalla(barcos,tablerobarcos,pos_bomba,tablerodisparos,tiros_dados,radar,tiros_fallados,estado,turno,miturno):
@@ -521,10 +524,9 @@ def actualizar_pantalla(barcos,tablerobarcos,pos_bomba,tablerodisparos,tiros_dad
     if estado == "posicionar barcos":
         visualizar_barco(barcos,tablerobarcos)
     visualizar_disparos(pos_bomba,tablerodisparos,tiros_dados,tiros_fallados,turno,miturno,estado)
-    dibujar(tablerodisparos)
-    dibujar(tablerobarcos)
-    print(tiros_dados)
-    print(barcos)
+    y = 1
+    y = dibujar(tablerodisparos,y)
+    dibujar(tablerobarcos,y)
     dibujar_radar(int(radar))
 
 def disparo(bomba,tiros_dados,confirmado,tiros_fallados,tablerodisparos,tablerobarcos):
@@ -547,7 +549,7 @@ def esperar_conex():
     '''
     define la direccion y el puerto del server
     '''
-    server_address = ('192.168.60.114', 8080)
+    server_address = ('192.168.104.1', 8080)
 
     '''
     conecta al servidor
@@ -593,62 +595,62 @@ def juego(cuenta):
     clock = pygame.time.Clock()
     path_tableros = os.path.dirname(os.path.abspath(__file__))
     arch_tab = os.path.join(path_tableros, f"Tableros.json")
-    o = "\033[36m ~\033[0m"
-    b = "\033[90m ≡\033[0m"
+    o = "\033[36m~ \033[0m"
+    b = "\033[90m≡ \033[0m"
     '''
     ░: caracter de disparo errado
     ≡: caracter de barco
     ¤: caracter de disparo pegado
     ~: caracter de agua
     '''
-    j1_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
-    j1_tablerobarcos   = [["╠","══","══","══","══","══","══","══","══","══","══","═╣"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
-    j2_tablerodisparos= [["╔","══","══","══","══","══","══","══","══","══","══","═╗"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                         ["╠","══","══","══","══","══","══","══","══","══","══","═╣"]]
-    j2_tablerobarcos   = [["╠","══","══","══","══","══","══","══","══","══","══","═╣"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["║",o,o,o,o,o,o,o,o,o,o," ║"],
-                          ["╚","══","══","══","══","══","══","══","══","══","══","═╝"]]
+    j1_tablerodisparos= [["╔═","══","══","══","══","══","══","══","══","══","══","╗"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["╠═","══","══","══","══","══","══","══","══","══","══","╣"]]
+    j1_tablerobarcos   = [["╠═","══","══","══","══","══","══","══","══","══","══","╣"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["╚═","══","══","══","══","══","══","══","══","══","══","╝"]]
+    j2_tablerodisparos= [["╔═","══","══","══","══","══","══","══","══","══","══","╗"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                         ["╠═","══","══","══","══","══","══","══","══","══","══","╣"]]
+    j2_tablerobarcos   = [["╠═","══","══","══","══","══","══","══","══","══","══","╣"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["║ ",o,o,o,o,o,o,o,o,o,o,"║"],
+                          ["╚═","══","══","══","══","══","══","══","══","══","══","╝"]]
     num_barco = 0
     todos_barcos = [[(1,1),(1,2),(1,3),(1,4),(1,5)],[(1,1),(1,2),(1,3),(1,4)],[(1,1),(1,2),(1,3)],[(1,1),(1,2),(1,3)],[(1,1),(1,2)]]
     barcosj1 = [[], [], [], [], []]
@@ -660,7 +662,7 @@ def juego(cuenta):
     pos_bomba = (1,1)
     radar = 0
     turno = 1
-    miturno = 1
+    miturno = 2
     estado = "posicionar barcos"
     confirmado = True
     presionado = True
@@ -847,12 +849,16 @@ def juego(cuenta):
                                                 if barcosj2[barco][coordenada][0] == pos_bomba[0] and barcosj2[barco][coordenada][1] == pos_bomba[1]:
                                                     encontrado = True
                                                     del barcosj2[barco][coordenada]
-                                                    print("TOCADO!")
-                                                    time.sleep(1.5)
                                                     if barcosj2[barco] == []:
                                                         del barcosj2[barco]
-                                                        print("HUNDIDO!")
-                                                        time.sleep(1.5)
+                                                        print("\033[26;55H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+                                                        print("\033[27;55H░██░░░██░██░░░░██░███░░░░██░██████░░██░██████░░░██████░░██░") 
+                                                        print("\033[28;55H░██░░░██░██░░░░██░████░░░██░██░░░██░██░██░░░██░██░░░░██░██░") 
+                                                        print("\033[29;55H░███████░██░░░░██░██░██░░██░██░░░██░██░██░░░██░██░░░░██░██░") 
+                                                        print("\033[30;55H░██░░░██░██░░░░██░██░░██░██░██░░░██░██░██░░░██░██░░░░██░░░░") 
+                                                        print("\033[31;55H░██░░░██░░██████░░██░░░████░██████░░██░██████░░░██████░░██░")
+                                                        print("\033[32;55H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+                                                        time.sleep(1)
                                 if barcosj2 == []:
                                     partida["Datos"]["jugador1gana"] = True
 
@@ -946,6 +952,13 @@ def revancha(jugador1gana, jugador2gana, cuenta, miturno):
         usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
         escribir_archivo(usuarios_JSON)
     elif jugador2gana and cuenta != "None" and miturno == 2:
+        print("\033[0;30H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+        print("\033[1;30H░██░░░██░░█████░░███████░░░░░░██████░░░█████░░███░░░░██░░█████░░██████░░░██████░░██░██") 
+        print("\033[2;30H░██░░░██░██░░░██░██░░░░░░░░░░██░░░░░░░██░░░██░████░░░██░██░░░██░██░░░██░██░░░░██░██░██") 
+        print("\033[3;30H░███████░███████░███████░░░░░██░░░███░███████░██░██░░██░███████░██░░░██░██░░░░██░██░██") 
+        print("\033[4;30H░██░░░██░██░░░██░░░░░░██░░░░░██░░░░██░██░░░██░██░░██░██░██░░░██░██░░░██░██░░░░██░░░░░░") 
+        print("\033[5;30H░██░░░██░██░░░██░███████░░░░░░██████░░██░░░██░██░░░████░██░░░██░██████░░░██████░░██░██")
+        print("\033[6;30H░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
         diccionario_usuarios = leer_archivo()
         diccionario_usuarios[cuenta]["puntaje"] += 1
         usuarios_JSON = json.dumps(diccionario_usuarios, indent=4)
