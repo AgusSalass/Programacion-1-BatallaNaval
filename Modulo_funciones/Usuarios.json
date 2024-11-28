@@ -17,7 +17,7 @@
     "agustin": {
         "alias": "AGU",
         "contrasena": "agustin",
-        "puntaje": 3
+        "puntaje": 6
     },
     "francisco": {
         "alias": "FRN",
@@ -42,6 +42,11 @@
     "jesus": {
         "alias": "JES",
         "contrasena": "12345",
+        "puntaje": 0
+    },
+    "lucaa": {
+        "alias": "LUK",
+        "contrasena": "lucaa",
         "puntaje": 0
     }
 }

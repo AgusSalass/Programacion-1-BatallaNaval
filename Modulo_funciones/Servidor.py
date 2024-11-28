@@ -12,7 +12,7 @@ clients = []
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 '''define la direccion y el puerto del server'''
-server_address = ('192.168.104.1', 8080)
+server_address = ('192.168.30.1', 8080)
 
 '''enlaza el socket a la direccion y el puerto'''
 server_socket.bind(server_address)
